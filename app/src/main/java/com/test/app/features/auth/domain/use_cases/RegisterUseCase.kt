@@ -25,7 +25,6 @@ class RegisterUseCase @Inject constructor(
             flow { throw NameValidationError() }
         } else {
             authRepository.register(phone, userName, name)
-                .map { it.isUserExists }
                 .flowOn(dispatchers.io)
         }
 }

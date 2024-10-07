@@ -21,7 +21,7 @@ class LoginUseCase @Inject constructor(
         flow { throw ValidationError() }
     } else {
         authRepository.login(phone, code)
-            .map { it.isUserExists }
+            .map { it.isUserExists ?: false }
             .flowOn(dispatchers.io)
     }
 }

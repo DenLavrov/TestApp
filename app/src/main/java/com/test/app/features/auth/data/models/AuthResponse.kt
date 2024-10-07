@@ -7,5 +7,5 @@ import kotlinx.serialization.Serializable
 data class AuthResponse(
     @SerialName("access_token") val token: String?,
     @SerialName("refresh_token") val refreshToken: String?,
-    @SerialName("is_user_exists") val isUserExists: Boolean
+    @SerialName("is_user_exists") val isUserExists: Boolean? = null
 )
