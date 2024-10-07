@@ -37,8 +37,6 @@ class AuthRepository @Inject constructor(
     }
 
     private suspend fun AuthResponse.save(): AuthResponse {
-        token ?: return this
-        refreshToken ?: return this
         storage.putString(Storage.REFRESH_TOKEN_KEY, refreshToken)
         storage.putString(Storage.TOKEN_KEY, token)
         return this

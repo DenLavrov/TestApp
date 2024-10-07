@@ -5,9 +5,9 @@ import android.content.SharedPreferences
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import com.test.app.core.data.AuthInterceptor
 import com.test.app.core.data.IRequester
-import com.test.app.core.data.RefreshApi
+import com.test.app.core.data.refresh.RefreshApi
 import com.test.app.core.data.Requester
-import com.test.app.core.data.UnauthorizedHandler
+import com.test.app.core.data.refresh.UnauthorizedHandler
 import dagger.Binds
 import dagger.Module
 import dagger.Provides

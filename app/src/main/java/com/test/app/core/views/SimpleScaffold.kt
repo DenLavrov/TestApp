@@ -3,6 +3,7 @@ package com.test.app.core.views
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
@@ -57,6 +58,7 @@ fun SimpleScaffold(
     imagePlaceholder: Painter? = null,
     imageSize: Dp = dimensionResource(R.dimen.image_medium),
     onImageClick: () -> Unit = {},
+    actions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit
 ) {
     Scaffold(
@@ -95,7 +97,9 @@ fun SimpleScaffold(
                         }
                     }
                 },
-                modifier = Modifier.shadow(dimensionResource(R.dimen.space_small))
+                actions = actions,
+                modifier = Modifier
+                    .shadow(dimensionResource(R.dimen.space_small))
             )
         }
     ) { padding ->

@@ -1,4 +1,4 @@
-package com.test.app.core.data.models
+package com.test.app.core.data.refresh.models
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

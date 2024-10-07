@@ -4,4 +4,6 @@ sealed class ProfileAction {
     data object Init : ProfileAction()
 
     data object DismissError : ProfileAction()
+
+    data object Logout : ProfileAction()
 }

@@ -8,6 +8,7 @@
     <string name="registration_name">Имя</string>
     <string name="registration_register_button">Зарегистрироваться</string>
     <string name="profile_title">Профиль</string>
+    <string name="profile_logout">выйти</string>
     <string name="profile_edit_button_text">Изменить</string>
     <string name="profile_birthday">Дата рождения: \n%s</string>
     <string name="profile_zodiac">Знак зодиака: \n%s</string>

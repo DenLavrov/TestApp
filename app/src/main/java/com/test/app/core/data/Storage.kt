@@ -25,7 +25,7 @@ class Storage @Inject constructor(private val sharedPreferences: SharedPreferenc
 
     fun getString(key: String) = sharedPreferences.getString(key, null)
 
-    suspend fun putString(key: String, value: String) {
+    suspend fun putString(key: String, value: String?) {
         sharedPreferences.edit {
             putString(key, value)
         }

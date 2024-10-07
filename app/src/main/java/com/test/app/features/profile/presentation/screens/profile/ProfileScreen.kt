@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -51,7 +52,9 @@ fun ProfileScreen(viewModel: ProfileViewModel, onEdit: () -> Unit, onBack: () ->
         }
     }
 
-    ProfileScreenContent(state = state, onEdit, onBack)
+    ProfileScreenContent(state = state, onEdit, onBack) {
+        viewModel.dispatch(ProfileAction.Logout)
+    }
 
     if (state.error.isNullOrEmpty().not())
         AlertDialog(
@@ -78,18 +81,40 @@ private fun ProfilePreview() {
     TestAppTheme {
         ProfileScreenContent(
             state = ProfileState.empty,
-            onEditClick = {}
+            onEditClick = {},
+            {}
         ) {
         }
     }
 }
 
 @Composable
-private fun ProfileScreenContent(state: ProfileState, onEditClick: () -> Unit, onBack: () -> Unit) {
+private fun ProfileScreenContent(
+    state: ProfileState,
+    onEditClick: () -> Unit,
+    onBack: () -> Unit,
+    onLogoutClick: () -> Unit
+) {
     val scrollState = rememberScrollState()
     SimpleScaffold(
         title = stringResource(R.string.profile_title),
-        onBackClick = onBack
+        onBackClick = onBack,
+        actions = {
+            Text(
+                text = stringResource(R.string.profile_logout),
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = onLogoutClick
+                ).padding(
+                    end = dimensionResource(
+                        R.dimen.space_small
+                    )
+                )
+            )
+        }
     ) {
         if (state.isLoading)
             Box(Modifier.fillMaxSize()) {

@@ -1,7 +1,7 @@
-package com.test.app.core.data
+package com.test.app.core.data.refresh
 
-import com.test.app.core.data.models.RefreshTokenRequest
-import com.test.app.core.data.models.RefreshTokenResponse
+import com.test.app.core.data.refresh.models.RefreshTokenRequest
+import com.test.app.core.data.refresh.models.RefreshTokenResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 
