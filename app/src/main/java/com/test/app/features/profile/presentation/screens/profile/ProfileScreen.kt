@@ -104,15 +104,17 @@ private fun ProfileScreenContent(
                 text = stringResource(R.string.profile_logout),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.clickable(
-                    interactionSource = null,
-                    indication = null,
-                    onClick = onLogoutClick
-                ).padding(
-                    end = dimensionResource(
-                        R.dimen.space_small
+                modifier = Modifier
+                    .clickable(
+                        interactionSource = null,
+                        indication = null,
+                        onClick = onLogoutClick
                     )
-                )
+                    .padding(
+                        end = dimensionResource(
+                            R.dimen.space_small
+                        )
+                    )
             )
         }
     ) {
@@ -137,7 +139,8 @@ private fun ProfileScreenContent(
                     AsyncImage(
                         model = state.avatar,
                         contentDescription = null,
-                        contentScale = ContentScale.None,
+                        contentScale = ContentScale.None.takeIf { state.avatar.isEmpty() }
+                            ?: ContentScale.FillBounds,
                         modifier = Modifier
                             .align(Alignment.CenterHorizontally)
                             .clip(CircleShape)

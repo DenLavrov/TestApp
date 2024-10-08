@@ -1,5 +1,6 @@
 package com.test.app.core.data
 
+import com.test.app.core.exceptions.NoConnectionException
 import org.json.JSONObject
 import retrofit2.HttpException
 import javax.inject.Inject

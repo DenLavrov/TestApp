@@ -28,9 +28,8 @@ class UnauthorizedHandler @Inject constructor(
         try {
             runBlocking(currentJob.value) {
                 mutex.withLock(currentJob.value) {
-                    val refreshToken =
-                        storage.getString(Storage.REFRESH_TOKEN_KEY) ?: return@withLock
                     try {
+                        val refreshToken = storage.getString(Storage.REFRESH_TOKEN_KEY)!!
                         refreshApi.get().refreshToken(RefreshTokenRequest(refreshToken)).save()
                     } catch (t: Throwable) {
                         RefreshTokenResponse.empty.save()

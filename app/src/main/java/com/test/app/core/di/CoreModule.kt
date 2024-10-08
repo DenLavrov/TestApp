@@ -24,6 +24,8 @@ val json = Json {
     encodeDefaults = true
 }
 
+const val BASE_URL = "https://plannerok.ru"
+
 @Module(includes = [CoreModule.Bindings::class])
 class CoreModule {
 
@@ -59,7 +61,7 @@ class CoreModule {
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit =
         Retrofit.Builder().client(okHttpClient)
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .baseUrl("https://plannerok.ru/api/v1/users/")
+            .baseUrl("$BASE_URL/api/v1/users/")
             .build()
 
     @CoreScope
@@ -78,7 +80,6 @@ class CoreModule {
         fun bindAuthenticator(authenticator: UnauthorizedHandler): Authenticator
 
         @Binds
-        @CoreScope
         fun bindRequester(requester: Requester): IRequester
     }
 }

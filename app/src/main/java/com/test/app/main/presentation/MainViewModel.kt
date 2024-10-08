@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.test.app.core.BaseViewModel
 import com.test.app.core.data.Storage
 import com.test.app.core.di.ViewModelAssistedFactory
-import com.test.app.main.domain.repository.IMainRepository
+import com.test.app.main.data.repository.IMainRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject

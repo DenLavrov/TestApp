@@ -1,7 +1,5 @@
 package com.test.app.features.profile.data.repository
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.test.app.core.data.IRequester
 import com.test.app.core.data.Storage
 import com.test.app.features.profile.data.models.AvatarData
@@ -31,7 +29,6 @@ class ProfileRepository @Inject constructor(
         emit(profile!!.save())
     }
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun updateProfile(
         username: String,
         phone: String,

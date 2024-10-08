@@ -1,7 +1,5 @@
 package com.test.app.features.chat.data.repository
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.test.app.features.chat.data.models.Chat
 import com.test.app.features.chat.data.models.ChatMessage
 import java.time.OffsetDateTime
@@ -9,7 +7,6 @@ import java.util.UUID
 import javax.inject.Inject
 import kotlin.random.Random
 
-@RequiresApi(Build.VERSION_CODES.O)
 class ChatRepository @Inject constructor() : IChatRepository {
     private val chatList =
         listOf(

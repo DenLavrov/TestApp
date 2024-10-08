@@ -1,6 +1,7 @@
 package com.test.app.features.profile.domain.models
 
 import com.test.app.R
+import com.test.app.core.di.BASE_URL
 import com.test.app.features.profile.data.models.AvatarData
 import com.test.app.features.profile.data.models.ProfileData
 import java.time.LocalDate
@@ -20,7 +21,7 @@ data class Profile(
 )
 
 fun ProfileData.toDomain() = Profile(
-    avatar = avatar?.let { AvatarData(it, "") },
+    avatar = avatars?.let { AvatarData("$BASE_URL/${it.avatar}", "") },
     userName = userName,
     birthday = birthday,
     phone = phone,

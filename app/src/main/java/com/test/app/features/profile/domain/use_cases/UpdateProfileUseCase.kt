@@ -1,6 +1,5 @@
 package com.test.app.features.profile.domain.use_cases
 
-import androidx.core.net.toUri
 import com.test.app.core.data.Dispatchers
 import com.test.app.features.profile.data.models.AvatarData
 import com.test.app.features.profile.domain.repository.IProfileRepository
@@ -13,6 +12,7 @@ import javax.inject.Inject
 @ProfileScope
 class UpdateProfileUseCase @Inject constructor(
     private val profileRepository: IProfileRepository,
+    private val getProfileUseCase: GetProfileUseCase,
     private val dispatchers: Dispatchers
 ) {
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -25,6 +25,6 @@ class UpdateProfileUseCase @Inject constructor(
         about: String? = null,
         city: String? = null
     ) = profileRepository.updateProfile(username, phone, name, avatar, birthday, about, city)
-        .flatMapConcat { profileRepository.getProfile(true) }
+        .flatMapConcat { getProfileUseCase(true) }
         .flowOn(dispatchers.io)
 }

@@ -4,11 +4,10 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.rememberScrollableState
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -60,11 +59,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.test.app.R
 import com.test.app.core.views.SimpleScaffold
-import com.test.app.features.auth.presentation.screens.phone.PhoneAction
 import com.test.app.features.profile.data.models.AvatarData
 import com.test.app.ui.theme.TestAppTheme
 import java.text.SimpleDateFormat
-import java.time.OffsetDateTime
 import java.util.Base64
 import java.util.Date
 import java.util.Locale
@@ -198,7 +195,7 @@ private fun EditProfileContent(
                         .padding(top = 24.dp)
                         .weight(1f)
                 ) {
-                    AvatarContent(avatar = state.avatar) {
+                    AvatarContent(avatar = state.avatar?.filename) {
                         onUpdateClick(it, state.birthday, state.about, state.city)
                     }
                     Spacer(modifier = Modifier.height(24.dp))
@@ -249,10 +246,10 @@ private fun EditProfileContent(
 }
 
 @Composable
-private fun AvatarContent(avatar: AvatarData?, onAvatarChange: (AvatarData?) -> Unit) {
+private fun AvatarContent(avatar: String?, onAvatarChange: (AvatarData?) -> Unit) {
     val context = LocalContext.current
     val pickImageLauncher =
-        rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
+        rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             it?.let { uri ->
                 onAvatarChange(
                     AvatarData(
@@ -263,15 +260,18 @@ private fun AvatarContent(avatar: AvatarData?, onAvatarChange: (AvatarData?) -> 
         }
 
     AsyncImage(
-        avatar?.filename,
+        avatar,
         contentDescription = null,
         error = painterResource(R.drawable.camera),
         modifier = Modifier
             .size(200.dp)
             .clip(CircleShape)
             .background(Color.LightGray)
-            .clickable { pickImageLauncher.launch("image/*") },
-        contentScale = ContentScale.None
+            .clickable {
+                pickImageLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            },
+        contentScale = ContentScale.None.takeIf { avatar.isNullOrEmpty() }
+            ?: ContentScale.FillBounds
     )
 }
 
