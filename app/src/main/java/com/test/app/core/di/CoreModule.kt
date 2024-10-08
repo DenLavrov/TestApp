@@ -21,7 +21,7 @@ import retrofit2.Retrofit
 
 val json = Json {
     ignoreUnknownKeys = true
-    encodeDefaults = true
+    explicitNulls = false
 }
 
 const val BASE_URL = "https://plannerok.ru"

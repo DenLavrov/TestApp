@@ -60,7 +60,7 @@ class EditProfileViewModel @AssistedInject constructor(
                 about = prevState.about,
                 birthday = prevState.birthday,
                 city = prevState.city,
-                avatar = prevState.avatar
+                avatar = prevState.avatar?.takeIf { it.base64.isNotEmpty() }
             ).toState(
                 onContent = {
                     effect(EditProfileEffect.Back)
