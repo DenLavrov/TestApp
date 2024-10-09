@@ -1,6 +1,7 @@
 package com.test.app.features.auth.presentation.di
 
 import com.test.app.core.di.CoreComponent
+import com.test.app.core.di.ViewModelAssistedFactory
 import com.test.app.features.auth.presentation.screens.code.CodeViewModel
 import com.test.app.features.auth.presentation.screens.phone.PhoneViewModel
 import com.test.app.features.auth.presentation.screens.register.RegisterViewModel
@@ -16,9 +17,9 @@ interface AuthComponent {
         fun build(): AuthComponent
     }
 
-    fun phoneVmFactory(): PhoneViewModel.Factory
+    fun phoneVmFactory(): ViewModelAssistedFactory<PhoneViewModel>
 
-    fun codeVmFactory(): CodeViewModel.Factory
+    fun codeVmFactory(): ViewModelAssistedFactory<CodeViewModel>
 
-    fun registerVmFactory(): RegisterViewModel.Factory
+    fun registerVmFactory(): ViewModelAssistedFactory<RegisterViewModel>
 }
