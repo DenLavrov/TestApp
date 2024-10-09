@@ -4,15 +4,17 @@ import com.test.app.core.di.ViewModelAssistedFactory
 import com.test.app.features.chat.data.repository.IChatRepository
 import com.test.app.features.chat.presentation.screens.chat.ChatViewModel
 import com.test.app.features.chat.presentation.screens.chats.ChatsViewModel
-import com.test.app.features.profile.presentation.di.ProfileComponent
+import com.test.app.features.profile.domain.use_cases.GetProfileUseCase
+import dagger.BindsInstance
 import dagger.Component
 
-@Component(modules = [ChatModule::class], dependencies = [ProfileComponent::class])
+@Component(modules = [ChatModule::class])
 @ChatScope
 interface ChatComponent {
     @Component.Builder
     interface Builder {
-        fun profileComponent(profileComponent: ProfileComponent): Builder
+        @BindsInstance
+        fun getProfileUseCase(getProfileUseCase: GetProfileUseCase): Builder
         fun build(): ChatComponent
     }
 

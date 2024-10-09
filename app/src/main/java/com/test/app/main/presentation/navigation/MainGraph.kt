@@ -16,8 +16,10 @@ import com.test.app.features.profile.presentation.navigation.profileGraph
 
 @Composable
 fun MainGraph(isAuthorized: Boolean, navController: NavHostController) {
-    if (isAuthorized)
-        ChatComponentHolder.init(ProfileComponentHolder.init(CoreComponentHolder.get()))
+    if (isAuthorized) {
+        ProfileComponentHolder.init(CoreComponentHolder.get())
+        ChatComponentHolder.init(ProfileComponentHolder.get().getProfileUseCase())
+    }
     else
         AuthComponentHolder.init(CoreComponentHolder.get())
     NavHost(
