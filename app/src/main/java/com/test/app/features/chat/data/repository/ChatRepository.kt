@@ -118,8 +118,6 @@ class ChatRepository @Inject constructor() : IChatRepository {
     override fun getMessages(id: String) = chatMessages[id]!!.sortedByDescending { it.dateTime }
 
     override fun sendMessage(chatId: String, message: String) {
-        if (message.isEmpty())
-            return
         chatMessages = chatMessages.map {
             if (it.key == chatId) {
                 it.key to it.value + ChatMessage(

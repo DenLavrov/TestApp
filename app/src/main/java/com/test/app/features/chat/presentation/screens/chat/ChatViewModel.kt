@@ -34,14 +34,16 @@ class ChatViewModel @AssistedInject constructor(
             )
 
             is ChatAction.UpdateText -> flowOf(prevState.copy(text = action.text))
-            is ChatAction.Send -> flowOf(
-                chatRepository.sendMessage(
-                    prevState.id,
-                    action.text
+            is ChatAction.Send -> action.text.takeIf { it.isNotEmpty() }?.let {
+                flowOf(
+                    chatRepository.sendMessage(
+                        prevState.id,
+                        it
+                    )
                 )
-            )
-                .map { prevState.copy(messages = chatRepository.getMessages(prevState.id)) }
-                .onCompletion { dispatch(ChatAction.UpdateText("")) }
+                    .map { prevState.copy(messages = chatRepository.getMessages(prevState.id)) }
+                    .onCompletion { dispatch(ChatAction.UpdateText("")) }
+            } ?: ignoreState()
         }
     }
 }
