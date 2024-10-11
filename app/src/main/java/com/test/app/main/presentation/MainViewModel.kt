@@ -18,7 +18,7 @@ class MainViewModel @AssistedInject constructor(
     storage: Storage,
     @Assisted savedStateHandle: SavedStateHandle
 ) : BaseViewModel<MainState, MainAction>(
-    MainState(storage.getString(Storage.TOKEN_KEY).isNullOrEmpty().not(), null),
+    MainState(storage.getString(Storage.TOKEN_KEY).isNullOrEmpty().not()),
     MainState.serializer(),
     savedStateHandle
 ) {
