@@ -1,5 +1,6 @@
-package com.test.app.core.data
+package com.test.app.core.data.interceptors
 
+import com.test.app.core.data.Storage
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject

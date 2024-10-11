@@ -3,10 +3,9 @@ package com.test.app.core.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import com.test.app.core.data.AuthInterceptor
-import com.test.app.core.data.IRequester
+import com.test.app.core.data.interceptors.AuthInterceptor
+import com.test.app.core.data.interceptors.ConnectionInterceptor
 import com.test.app.core.data.refresh.RefreshApi
-import com.test.app.core.data.Requester
 import com.test.app.core.data.refresh.UnauthorizedHandler
 import dagger.Binds
 import dagger.Module
@@ -48,12 +47,14 @@ class CoreModule {
     fun provideHttpClient(
         @AuthInterceptorQualifier authInterceptor: Interceptor,
         @LoggingInterceptorQualifier loggingInterceptor: Interceptor,
+        @ConnectionInterceptorQualifier connectionInterceptor: Interceptor,
         authenticator: Authenticator
     ): OkHttpClient =
         OkHttpClient.Builder()
-            .authenticator(authenticator)
+            .addInterceptor(connectionInterceptor)
+            .addInterceptor(authInterceptor)
             .addInterceptor(loggingInterceptor)
-            .addNetworkInterceptor(authInterceptor)
+            .authenticator(authenticator)
             .build()
 
     @Provides
@@ -77,9 +78,11 @@ class CoreModule {
 
         @Binds
         @CoreScope
-        fun bindAuthenticator(authenticator: UnauthorizedHandler): Authenticator
+        @ConnectionInterceptorQualifier
+        fun bindConnectionInterceptor(connectionInterceptor: ConnectionInterceptor): Interceptor
 
         @Binds
-        fun bindRequester(requester: Requester): IRequester
+        @CoreScope
+        fun bindAuthenticator(authenticator: UnauthorizedHandler): Authenticator
     }
 }

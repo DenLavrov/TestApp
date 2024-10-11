@@ -7,3 +7,6 @@ annotation class LoggingInterceptorQualifier
 
 @Qualifier
 annotation class AuthInterceptorQualifier
+
+@Qualifier
+annotation class ConnectionInterceptorQualifier

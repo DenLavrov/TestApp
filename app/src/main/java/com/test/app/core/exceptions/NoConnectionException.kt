@@ -1,3 +1,5 @@
 package com.test.app.core.exceptions
 
-class NoConnectionException : Throwable("No internet connection")
+import java.io.IOException
+
+class NoConnectionException : IOException("No internet connection")
