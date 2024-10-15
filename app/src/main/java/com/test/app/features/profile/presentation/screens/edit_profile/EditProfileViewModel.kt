@@ -44,15 +44,10 @@ class EditProfileViewModel @AssistedInject constructor(
                     )
                 }
 
-            is EditProfileAction.Update -> flowOf(
-                prevState.copy(
-                    birthday = action.birthday,
-                    avatar = action.avatar,
-                    about = action.about,
-                    city = action.city
-                )
-            )
-
+            is EditProfileAction.UpdateAvatar -> flowOf(prevState.copy(avatar = action.avatar))
+            is EditProfileAction.UpdateBirthday -> flowOf(prevState.copy(birthday = action.birthday))
+            is EditProfileAction.UpdateAbout -> flowOf(prevState.copy(about = action.about))
+            is EditProfileAction.UpdateCity -> flowOf(prevState.copy(city = action.city))
             EditProfileAction.Save -> updateProfileUseCase(
                 username = prevState.username,
                 phone = prevState.phone,

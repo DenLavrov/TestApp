@@ -33,7 +33,7 @@ abstract class BaseViewModel<T, Action>(
     private val _state = MutableStateFlow(savedStateHandle.get<String>(STATE_KEY)?.let {
         json.decodeFromString(serializer, it)
     } ?: initialState)
-    val state: StateFlow<T> = _state
+    val state = _state
         .map {
             savedStateHandle[STATE_KEY] = json.encodeToString(serializer, it)
             it

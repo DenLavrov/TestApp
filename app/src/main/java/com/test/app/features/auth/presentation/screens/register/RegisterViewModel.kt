@@ -31,12 +31,17 @@ class RegisterViewModel @AssistedInject constructor(
                 prevState.copy(phone = action.phone)
             )
 
-            is RegisterAction.Update -> flowOf(
+            is RegisterAction.UpdateUserName -> flowOf(
+                prevState.copy(
+                    userName = action.userName,
+                    isUserNameValid = true
+                )
+            )
+
+            is RegisterAction.UpdateName -> flowOf(
                 prevState.copy(
                     name = action.name,
-                    userName = action.userName,
-                    isNameValid = true,
-                    isUserNameValid = true
+                    isNameValid = true
                 )
             )
 

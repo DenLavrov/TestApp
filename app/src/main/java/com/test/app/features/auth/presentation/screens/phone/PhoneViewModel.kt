@@ -26,12 +26,17 @@ class PhoneViewModel @AssistedInject constructor(
     override fun reduce(prevState: PhoneState, action: PhoneAction): Flow<PhoneState> {
         return when (action) {
             PhoneAction.DismissError -> flowOf(prevState.copy(error = null))
-            is PhoneAction.Update -> flowOf(
+            is PhoneAction.UpdatePhone -> flowOf(
                 prevState.copy(
                     phone = action.phone,
-                    countryCode = action.countryCode,
-                    countryNumber = action.countryNumber,
                     isValid = true
+                )
+            )
+
+            is PhoneAction.UpdateCountry -> flowOf(
+                prevState.copy(
+                    countryNumber = action.countryNumber,
+                    countryCode = action.countryCode
                 )
             )
 

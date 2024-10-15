@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
@@ -17,34 +18,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.CornerRadius
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Outline
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.addOutline
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Density
-import androidx.compose.ui.unit.LayoutDirection
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.test.app.R
-import com.test.app.core.views.SimpleScaffold
+import com.test.app.core.presentation.views.SimpleScaffold
+import com.test.app.core.presentation.views.TriangleEdgeShape
 import com.test.app.features.chat.data.models.ChatMessage
 import com.test.app.ui.theme.TestAppTheme
 import com.test.app.ui.theme.chatBackground
+import com.test.app.ui.theme.dimens
 import com.test.app.ui.theme.messageBackground
 import java.time.OffsetDateTime
 
@@ -66,8 +57,7 @@ fun ChatScreen(
         state = state,
         title,
         image,
-        { viewModel.dispatch(ChatAction.UpdateText(it)) },
-        { viewModel.dispatch(ChatAction.Send(it)) },
+        viewModel::dispatch,
         onBackClick
     )
 }
@@ -91,9 +81,7 @@ private fun ChatPreview() {
             ), title = "Some title", image = "",
             {},
             {}
-        ) {
-
-        }
+        )
     }
 }
 
@@ -102,11 +90,15 @@ private fun ChatScreenContent(
     state: ChatState,
     title: String,
     image: String,
-    onTextUpdate: (String) -> Unit,
-    onSendClick: (String) -> Unit,
+    onAction: (ChatAction) -> Unit,
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val lazyListState = rememberLazyListState()
+    LaunchedEffect(state.messages.size) {
+        if (state.messages.isNotEmpty())
+            lazyListState.scrollToItem(0)
+    }
     SimpleScaffold(title, onBackClick, image) {
         Column(Modifier.background(MaterialTheme.colorScheme.chatBackground)) {
             LazyColumn(
@@ -115,11 +107,12 @@ private fun ChatScreenContent(
                     .clickable(
                         interactionSource = null,
                         indication = null,
-                        onClick = { focusManager.clearFocus() }
+                        onClick = focusManager::clearFocus
                     ),
-                reverseLayout = true
+                reverseLayout = true,
+                state = lazyListState
             ) {
-                items(state.messages, contentType = { it.type }) {
+                items(state.messages, key = { it.id }, contentType = { it.type }) {
                     when (it.type) {
                         ChatMessage.Type.OUTGOING -> Message(
                             text = it.message,
@@ -141,12 +134,12 @@ private fun ChatScreenContent(
             }
             TextField(
                 value = state.text,
-                onValueChange = onTextUpdate,
+                onValueChange = { onAction(ChatAction.UpdateText(it)) },
                 trailingIcon = {
                     IconButton(
                         onClick = {
                             focusManager.clearFocus()
-                            onSendClick(state.text)
+                            onAction(ChatAction.Send(state.text))
                         }
                     ) {
                         Icon(
@@ -168,7 +161,7 @@ private fun ChatScreenContent(
                 keyboardActions = KeyboardActions(
                     onSend = {
                         focusManager.clearFocus()
-                        onSendClick(state.text)
+                        onAction(ChatAction.Send(state.text))
                     }
                 )
             )
@@ -190,59 +183,6 @@ private fun MessagePreview() {
     }
 }
 
-class TriangleEdgeShape(
-    private val offset: Int, private val cornerRadius: Float,
-    private val orientation: Orientation
-) : Shape {
-
-    override fun createOutline(
-        size: Size,
-        layoutDirection: LayoutDirection,
-        density: Density
-    ): Outline {
-        val trianglePath = Path().apply {
-            if (orientation == Orientation.RIGHT) {
-                addOutline(
-                    Outline.Rounded(
-                        RoundRect(
-                            size.toRect(),
-                            CornerRadius(cornerRadius, cornerRadius),
-                            CornerRadius(cornerRadius, cornerRadius),
-                            CornerRadius.Zero,
-                            CornerRadius(cornerRadius, cornerRadius)
-                        )
-                    )
-                )
-                moveTo(x = size.width, y = size.height - offset)
-                lineTo(x = size.width, y = size.height)
-                lineTo(x = size.width + offset, y = size.height)
-            } else {
-                addOutline(
-                    Outline.Rounded(
-                        RoundRect(
-                            size.toRect(),
-                            CornerRadius(cornerRadius, cornerRadius),
-                            CornerRadius(cornerRadius, cornerRadius),
-                            CornerRadius(cornerRadius, cornerRadius),
-                            CornerRadius.Zero
-                        )
-                    )
-                )
-                moveTo(x = 0f, y = size.height - offset)
-                lineTo(x = 0f, y = size.height)
-                lineTo(x = 0f - offset, y = size.height)
-            }
-        }
-        return Outline.Generic(trianglePath)
-    }
-
-    @Immutable
-    enum class Orientation {
-        LEFT,
-        RIGHT
-    }
-}
-
 @Composable
 private fun Message(
     text: String,
@@ -254,12 +194,15 @@ private fun Message(
     Box(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 10.dp, vertical = 8.dp)
+            .padding(
+                horizontal = MaterialTheme.dimens.chatMessagePadding,
+                vertical = MaterialTheme.dimens.smallSpace
+            )
     ) {
         Box(
             Modifier
                 .background(backgroundColor, TriangleEdgeShape(10, 16f, orientation))
-                .padding(8.dp)
+                .padding(MaterialTheme.dimens.smallSpace)
                 .align(alignment)
         ) {
             Text(text = text, color = textColor)

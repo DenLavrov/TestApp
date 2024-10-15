@@ -2,18 +2,16 @@ package com.test.app.features.profile.presentation.screens.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -28,17 +26,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.test.app.R
-import com.test.app.core.views.SimpleScaffold
+import com.test.app.core.presentation.utils.ObserveLifecycleEvents
+import com.test.app.core.presentation.views.MainButton
+import com.test.app.core.presentation.views.SimpleScaffold
 import com.test.app.ui.theme.TestAppTheme
+import com.test.app.ui.theme.dimens
 
 @Composable
 fun ProfileScreen(viewModel: ProfileViewModel, onEdit: () -> Unit, onBack: () -> Unit) {
@@ -46,6 +45,8 @@ fun ProfileScreen(viewModel: ProfileViewModel, onEdit: () -> Unit, onBack: () ->
 
     LaunchedEffect(true) {
         viewModel.dispatch(ProfileAction.Init)
+    }
+    ObserveLifecycleEvents {
         viewModel.effects.collect {
             if (it is ProfileEffect.Back)
                 onBack()
@@ -102,7 +103,7 @@ private fun ProfileScreenContent(
         actions = {
             Text(
                 text = stringResource(R.string.profile_logout),
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.error,
                 modifier = Modifier
                     .clickable(
@@ -110,11 +111,7 @@ private fun ProfileScreenContent(
                         indication = null,
                         onClick = onLogoutClick
                     )
-                    .padding(
-                        end = dimensionResource(
-                            R.dimen.space_small
-                        )
-                    )
+                    .padding(end = MaterialTheme.dimens.smallSpace)
             )
         }
     ) {
@@ -128,13 +125,18 @@ private fun ProfileScreenContent(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
+                    .padding(
+                        bottom = MaterialTheme.dimens.largeSpace,
+                        start = MaterialTheme.dimens.largeSpace,
+                        end = MaterialTheme.dimens.largeSpace
+                    )
             ) {
                 Column(
                     Modifier
                         .align(Alignment.TopCenter)
-                        .padding(top = 24.dp)
-                        .verticalScroll(scrollState)
+                        .padding(top = MaterialTheme.dimens.largeSpace)
+                        .verticalScroll(scrollState),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.mediumSpace)
                 ) {
                     AsyncImage(
                         model = state.avatar,
@@ -145,28 +147,24 @@ private fun ProfileScreenContent(
                             .align(Alignment.CenterHorizontally)
                             .clip(CircleShape)
                             .background(Color.LightGray)
-                            .size(200.dp),
+                            .size(MaterialTheme.dimens.profileImage),
                         error = painterResource(id = R.drawable.camera)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = state.userName,
                         style = MaterialTheme.typography.titleLarge,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                     Text(
                         text = state.phone,
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                     state.birthday?.takeIf { it.isNotEmpty() }?.let {
                         Text(
                             textAlign = TextAlign.Center,
                             text = stringResource(R.string.profile_birthday, it),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                     state.zodiac?.let {
                         Text(
@@ -174,7 +172,6 @@ private fun ProfileScreenContent(
                             text = stringResource(R.string.profile_zodiac, stringResource(it)),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                     state.city?.takeIf { it.isNotEmpty() }?.let {
                         Text(
@@ -182,7 +179,6 @@ private fun ProfileScreenContent(
                             text = stringResource(R.string.profile_city_format, it),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                     state.about?.takeIf { it.isNotEmpty() }?.let {
                         Text(
@@ -190,21 +186,15 @@ private fun ProfileScreenContent(
                             text = stringResource(R.string.profile_about_format, it),
                             modifier = Modifier.align(Alignment.CenterHorizontally)
                         )
-                        Spacer(modifier = Modifier.height(16.dp))
                     }
                 }
-                Button(
+                MainButton(
+                    text = stringResource(R.string.profile_edit_button_text),
                     onClick = onEditClick,
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(vertical = 12.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.profile_edit_button_text)
-                    )
-                }
+                        .fillMaxWidth()
+                )
             }
     }
 }

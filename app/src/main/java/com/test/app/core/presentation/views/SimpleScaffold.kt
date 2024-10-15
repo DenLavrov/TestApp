@@ -1,4 +1,4 @@
-package com.test.app.core.views
+package com.test.app.core.presentation.views
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -26,14 +25,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.test.app.R
 import com.test.app.ui.theme.TestAppTheme
+import com.test.app.ui.theme.dimens
 
 @Preview
 @Composable
@@ -56,7 +54,7 @@ fun SimpleScaffold(
     onBackClick: (() -> Unit)? = null,
     image: String? = null,
     imagePlaceholder: Painter? = null,
-    imageSize: Dp = dimensionResource(R.dimen.image_medium),
+    imageSize: Dp = MaterialTheme.dimens.appBarImage,
     onImageClick: () -> Unit = {},
     actions: @Composable RowScope.() -> Unit = {},
     content: @Composable () -> Unit
@@ -78,7 +76,7 @@ fun SimpleScaffold(
                                 contentScale = ContentScale.FillBounds,
                                 error = imagePlaceholder
                             )
-                            Spacer(modifier = Modifier.width(dimensionResource(R.dimen.space_small)))
+                            Spacer(modifier = Modifier.width(MaterialTheme.dimens.smallSpace))
                         }
                         Text(
                             text = title,
@@ -99,7 +97,7 @@ fun SimpleScaffold(
                 },
                 actions = actions,
                 modifier = Modifier
-                    .shadow(dimensionResource(R.dimen.space_small))
+                    .shadow(MaterialTheme.dimens.shadow)
             )
         }
     ) { padding ->

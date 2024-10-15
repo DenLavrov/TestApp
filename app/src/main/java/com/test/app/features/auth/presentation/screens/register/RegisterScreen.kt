@@ -1,25 +1,17 @@
 package com.test.app.features.auth.presentation.screens.register
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -28,14 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.test.app.R
-import com.test.app.core.views.SimpleScaffold
+import com.test.app.core.presentation.views.MainButton
+import com.test.app.core.presentation.views.SimpleScaffold
 import com.test.app.ui.theme.TestAppTheme
+import com.test.app.ui.theme.dimens
 
 @Composable
 fun RegisterScreen(viewModel: RegisterViewModel, phone: String, onBack: () -> Unit) {
@@ -47,8 +40,7 @@ fun RegisterScreen(viewModel: RegisterViewModel, phone: String, onBack: () -> Un
 
     RegisterScreenContent(
         state,
-        { userName, name -> viewModel.dispatch(RegisterAction.Update(userName, name)) },
-        { viewModel.dispatch(RegisterAction.Register) },
+        viewModel::dispatch,
         onBack
     )
 
@@ -77,8 +69,7 @@ private fun RegisterScreenPreview() {
     TestAppTheme {
         RegisterScreenContent(
             state = RegisterState.empty,
-            onUpdate = { _, _ -> },
-            onRegisterClick = {}) {
+            onAction = {}) {
         }
     }
 }
@@ -86,8 +77,7 @@ private fun RegisterScreenPreview() {
 @Composable
 private fun RegisterScreenContent(
     state: RegisterState,
-    onUpdate: (String, String) -> Unit,
-    onRegisterClick: () -> Unit,
+    onAction: (RegisterAction) -> Unit,
     onBack: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -95,22 +85,24 @@ private fun RegisterScreenContent(
         Box(
             Modifier
                 .fillMaxSize()
-                .padding(dimensionResource(R.dimen.space_large))
+                .padding(MaterialTheme.dimens.largeSpace)
                 .clickable(
                     interactionSource = null,
                     indication = null,
-                    onClick = { focusManager.clearFocus() })
+                    onClick = focusManager::clearFocus
+                )
         ) {
             Column(
                 Modifier
                     .align(Alignment.Center)
-                    .fillMaxWidth()
+                    .fillMaxWidth(),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.mediumSpace)
             ) {
                 OutlinedTextField(
                     value = state.userName,
-                    onValueChange = { onUpdate(it, state.name) },
+                    onValueChange = { onAction(RegisterAction.UpdateUserName(it)) },
                     label = { Text(text = stringResource(R.string.registration_username)) },
-                    shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_medium)),
+                    shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
                         .fillMaxWidth(),
                     isError = state.isUserNameValid.not(),
@@ -122,40 +114,33 @@ private fun RegisterScreenContent(
                     enabled = state.isLoading.not(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next)
                 )
-                Spacer(modifier = Modifier.height(dimensionResource(R.dimen.space_medium)))
                 OutlinedTextField(
                     value = state.name,
-                    onValueChange = { onUpdate(state.userName, it) },
+                    onValueChange = { onAction(RegisterAction.UpdateName(it)) },
                     label = { Text(text = stringResource(R.string.registration_name)) },
-                    shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_medium)),
+                    shape = MaterialTheme.shapes.medium,
                     modifier = Modifier
                         .fillMaxWidth(),
                     enabled = state.isLoading.not(),
                     isError = state.isNameValid.not(),
-                    keyboardActions = KeyboardActions(onDone = { onRegisterClick() }),
+                    keyboardActions = KeyboardActions(onDone = {
+                        focusManager.clearFocus()
+                        onAction(RegisterAction.Register)
+                    }),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
                 )
             }
-            Button(
+            MainButton(
+                text = stringResource(R.string.registration_register_button),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
+                isLoading = state.isLoading,
                 onClick = {
                     focusManager.clearFocus()
-                    onRegisterClick()
-                },
-                enabled = state.isLoading.not(),
-                contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.button_padding)),
-                shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_medium))
-            ) {
-                if (state.isLoading)
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(dimensionResource(R.dimen.space_large)),
-                        color = MaterialTheme.colorScheme.background
-                    )
-                else
-                    Text(text = stringResource(R.string.registration_register_button))
-            }
+                    onAction(RegisterAction.Register)
+                }
+            )
         }
     }
 }

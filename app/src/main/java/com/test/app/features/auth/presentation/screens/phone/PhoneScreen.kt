@@ -3,16 +3,11 @@ package com.test.app.features.auth.presentation.screens.phone
 import android.telephony.TelephonyManager
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -23,13 +18,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.arpitkatiyarprojects.countrypicker.CountryPickerOutlinedTextField
 import com.test.app.R
+import com.test.app.core.presentation.utils.ObserveLifecycleEvents
+import com.test.app.core.presentation.views.MainButton
 import com.test.app.ui.theme.TestAppTheme
+import com.test.app.ui.theme.dimens
 
 @Composable
 fun PhoneScreen(viewModel: PhoneViewModel, goToCode: (String) -> Unit) {
@@ -38,13 +35,14 @@ fun PhoneScreen(viewModel: PhoneViewModel, goToCode: (String) -> Unit) {
     LaunchedEffect(true) {
         context.getSystemService(TelephonyManager::class.java)?.let {
             viewModel.dispatch(
-                PhoneAction.Update(
-                    state.phone,
+                PhoneAction.UpdateCountry(
                     state.countryNumber,
                     it.networkCountryIso ?: it.simCountryIso
                 )
             )
         }
+    }
+    ObserveLifecycleEvents {
         viewModel.effects.collect {
             if (it is PhoneEffect.CodeSent) {
                 goToCode(it.phone)
@@ -53,12 +51,8 @@ fun PhoneScreen(viewModel: PhoneViewModel, goToCode: (String) -> Unit) {
     }
     PhoneScreenContent(
         state = state,
-        onUpdate = { countryCode, countryNumber, phone ->
-            viewModel.dispatch(PhoneAction.Update(phone, countryNumber, countryCode))
-        }
-    ) {
-        viewModel.dispatch(PhoneAction.SendCode)
-    }
+        onAction = viewModel::dispatch
+    )
 
     if (state.error.isNullOrEmpty().not())
         AlertDialog(
@@ -84,17 +78,15 @@ fun PhoneScreen(viewModel: PhoneViewModel, goToCode: (String) -> Unit) {
 private fun PhoneScreenPreview() {
     TestAppTheme {
         PhoneScreenContent(
-            state = PhoneState.empty,
-            onUpdate = { _, _, _ -> }) {
-        }
+            state = PhoneState.empty
+        ) {}
     }
 }
 
 @Composable
 private fun PhoneScreenContent(
     state: PhoneState,
-    onUpdate: (String, String, String) -> Unit,
-    onSendCodeClick: () -> Unit
+    onAction: (PhoneAction) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     Scaffold { padding ->
@@ -102,25 +94,22 @@ private fun PhoneScreenContent(
             Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(dimensionResource(R.dimen.space_large))
+                .padding(MaterialTheme.dimens.largeSpace)
                 .imePadding()
                 .clickable(
                     interactionSource = null,
                     indication = null,
-                    onClick = { focusManager.clearFocus() })
+                    onClick = focusManager::clearFocus
+                )
         ) {
             CountryPickerOutlinedTextField(
                 mobileNumber = state.phone,
                 enabled = state.isLoading.not(),
-                onMobileNumberChange = { onUpdate(state.countryCode, state.countryNumber, it) },
+                onMobileNumberChange = { onAction(PhoneAction.UpdatePhone(it)) },
                 onCountrySelected = {
-                    onUpdate(
-                        it.countryCode,
-                        it.countryPhoneNumberCode,
-                        state.phone
-                    )
+                    onAction(PhoneAction.UpdateCountry(it.countryPhoneNumberCode, it.countryCode))
                 },
-                shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_medium)),
+                shape = MaterialTheme.shapes.medium,
                 label = { Text(text = stringResource(R.string.auth_phone)) },
                 isError = state.isValid.not(),
                 defaultCountryCode = state.countryCode,
@@ -129,29 +118,20 @@ private fun PhoneScreenContent(
                     .fillMaxWidth(),
                 onDone = {
                     focusManager.clearFocus()
-                    onSendCodeClick()
+                    onAction(PhoneAction.SendCode)
                 }
             )
-            Button(
+            MainButton(
+                text = stringResource(R.string.auth_phone_send_code),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth(),
+                isLoading = state.isLoading,
                 onClick = {
                     focusManager.clearFocus()
-                    onSendCodeClick()
-                },
-                enabled = state.isLoading.not(),
-                contentPadding = PaddingValues(vertical = dimensionResource(R.dimen.button_padding)),
-                shape = RoundedCornerShape(dimensionResource(R.dimen.corner_radius_medium))
-            ) {
-                if (state.isLoading)
-                    CircularProgressIndicator(
-                        modifier = Modifier.size(dimensionResource(R.dimen.space_large)),
-                        color = MaterialTheme.colorScheme.background
-                    )
-                else
-                    Text(text = stringResource(R.string.auth_phone_send_code))
-            }
+                    onAction(PhoneAction.SendCode)
+                }
+            )
         }
     }
 }

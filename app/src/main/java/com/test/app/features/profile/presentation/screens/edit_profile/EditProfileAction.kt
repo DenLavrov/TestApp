@@ -5,8 +5,13 @@ import com.test.app.features.profile.data.models.AvatarData
 sealed class EditProfileAction {
     data object Save : EditProfileAction()
 
-    data class Update(val avatar: AvatarData?, val birthday: String?, val about: String, val city: String) :
-        EditProfileAction()
+    data class UpdateAvatar(val avatar: AvatarData?) : EditProfileAction()
+
+    data class UpdateBirthday(val birthday: String?) : EditProfileAction()
+
+    data class UpdateAbout(val about: String) : EditProfileAction()
+
+    data class UpdateCity(val city: String) : EditProfileAction()
 
     data object DismissError : EditProfileAction()
 

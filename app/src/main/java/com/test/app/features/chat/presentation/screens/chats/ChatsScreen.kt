@@ -1,20 +1,18 @@
 package com.test.app.features.chat.presentation.screens.chats
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -24,18 +22,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.test.app.R
-import com.test.app.core.views.SimpleScaffold
+import com.test.app.core.presentation.views.SimpleScaffold
 import com.test.app.features.chat.data.models.Chat
 import com.test.app.ui.theme.TestAppTheme
+import com.test.app.ui.theme.dimens
 import java.util.UUID
 
 @Composable
@@ -106,7 +101,7 @@ private fun ChatsScreenContent(
         imagePlaceholder = painterResource(R.drawable.avatar_placeholder)
     ) {
         LazyColumn {
-            item { Spacer(modifier = Modifier.height(8.dp)) }
+            item { Spacer(modifier = Modifier.height(MaterialTheme.dimens.smallSpace)) }
             items(state.data, key = { it.id }) {
                 Row(
                     Modifier
@@ -114,19 +109,21 @@ private fun ChatsScreenContent(
                             onItemClick(it.id, it.title, it.image)
                         }
                         .fillMaxWidth()
-                        .padding(vertical = 8.dp, horizontal = 24.dp)) {
+                        .padding(
+                            vertical = MaterialTheme.dimens.smallSpace,
+                            horizontal = MaterialTheme.dimens.largeSpace
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.largeSpace)
+                ) {
                     AsyncImage(
                         model = it.image,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(48.dp)
-                            .clip(
-                                CircleShape
-                            ),
+                            .size(MaterialTheme.dimens.chatImage)
+                            .clip(CircleShape),
                         contentScale = ContentScale.FillBounds,
                         error = painterResource(R.drawable.placeholder_error)
                     )
-                    Spacer(modifier = Modifier.width(24.dp))
                     Column {
                         Text(
                             text = it.title,
@@ -142,7 +139,7 @@ private fun ChatsScreenContent(
                     }
                 }
             }
-            item { Spacer(modifier = Modifier.height(8.dp)) }
+            item { Spacer(modifier = Modifier.height(MaterialTheme.dimens.smallSpace)) }
         }
     }
 }

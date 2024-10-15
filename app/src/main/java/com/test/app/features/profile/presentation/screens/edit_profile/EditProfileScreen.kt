@@ -1,25 +1,21 @@
 package com.test.app.features.profile.presentation.screens.edit_profile
 
-import android.content.Context
-import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
@@ -54,17 +50,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.test.app.R
-import com.test.app.core.views.SimpleScaffold
+import com.test.app.core.presentation.utils.ObserveLifecycleEvents
+import com.test.app.core.presentation.utils.convertMillisToYyyyMMddFormat
+import com.test.app.core.presentation.utils.getBase64ImageData
+import com.test.app.core.presentation.views.MainButton
+import com.test.app.core.presentation.views.SimpleScaffold
 import com.test.app.features.profile.data.models.AvatarData
 import com.test.app.ui.theme.TestAppTheme
-import java.text.SimpleDateFormat
-import java.util.Base64
-import java.util.Date
-import java.util.Locale
+import com.test.app.ui.theme.dimens
 
 @Composable
 fun EditProfileScreen(viewModel: EditProfileViewModel, onBack: () -> Unit) {
@@ -73,8 +69,10 @@ fun EditProfileScreen(viewModel: EditProfileViewModel, onBack: () -> Unit) {
         mutableStateOf(false)
     }
 
-    LaunchedEffect(key1 = true) {
+    LaunchedEffect(true) {
         viewModel.dispatch(EditProfileAction.Init)
+    }
+    ObserveLifecycleEvents {
         viewModel.effects.collect {
             if (it is EditProfileEffect.Back)
                 onBack()
@@ -83,13 +81,8 @@ fun EditProfileScreen(viewModel: EditProfileViewModel, onBack: () -> Unit) {
 
     EditProfileContent(
         state,
-        onSaveClick = {
-            viewModel.dispatch(EditProfileAction.Save)
-        },
-        onBack = { showDialog = true },
-        onUpdateClick = { avatar, birthday, about, city ->
-            viewModel.dispatch(EditProfileAction.Update(avatar, birthday, about, city))
-        }
+        onAction = viewModel::dispatch,
+        onBack = { showDialog = true }
     )
 
     if (state.error.isNullOrEmpty().not())
@@ -148,24 +141,21 @@ private fun EditProfilePreview() {
     TestAppTheme {
         EditProfileContent(
             state = EditProfileState.empty,
-            onSaveClick = { /*TODO*/ },
-            onBack = {},
-            onUpdateClick = { _, _, _, _ -> })
+            onAction = { /*TODO*/ },
+            onBack = {}
+        )
     }
 }
 
 @Composable
 private fun EditProfileContent(
     state: EditProfileState,
-    onSaveClick: () -> Unit,
-    onUpdateClick: (AvatarData?, String?, String, String) -> Unit,
+    onAction: (EditProfileAction) -> Unit,
     onBack: () -> Unit
 ) {
     val scrollState = rememberScrollState()
     val focusManager = LocalFocusManager.current
-    BackHandler {
-        onBack()
-    }
+    BackHandler(onBack = onBack)
     SimpleScaffold(
         title = stringResource(R.string.profile_title),
         onBackClick = onBack
@@ -180,67 +170,65 @@ private fun EditProfileContent(
             Column(
                 Modifier
                     .fillMaxSize()
-                    .padding(bottom = 24.dp, start = 24.dp, end = 24.dp)
+                    .padding(
+                        bottom = MaterialTheme.dimens.largeSpace,
+                        start = MaterialTheme.dimens.largeSpace,
+                        end = MaterialTheme.dimens.largeSpace
+                    )
                     .clickable(
                         interactionSource = null,
                         indication = null,
-                        onClick = { focusManager.clearFocus() }
-                    )
+                        onClick = focusManager::clearFocus
+                    ),
+                verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.largeSpace)
             ) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .fillMaxWidth()
                         .verticalScroll(scrollState)
-                        .padding(top = 24.dp)
-                        .weight(1f)
+                        .padding(top = MaterialTheme.dimens.largeSpace)
+                        .weight(1f),
+                    verticalArrangement = Arrangement.spacedBy(MaterialTheme.dimens.largeSpace)
                 ) {
                     AvatarContent(avatar = state.avatar?.filename) {
-                        onUpdateClick(it, state.birthday, state.about, state.city)
+                        onAction(EditProfileAction.UpdateAvatar(it))
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
                     BirthdayContent(birthday = state.birthday) {
-                        onUpdateClick(state.avatar, it, state.about, state.city)
+                        onAction(EditProfileAction.UpdateBirthday(it))
                     }
-                    Spacer(modifier = Modifier.height(24.dp))
                     OutlinedTextField(
                         value = state.city,
                         onValueChange = {
-                            onUpdateClick(state.avatar, state.birthday, state.about, it)
+                            onAction(EditProfileAction.UpdateCity(it))
                         },
-                        shape = RoundedCornerShape(12.dp),
+                        shape = MaterialTheme.shapes.medium,
                         label = { Text(text = stringResource(R.string.profile_city)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = {
                             focusManager.moveFocus(FocusDirection.Down)
                         })
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
                     OutlinedTextField(
                         value = state.about,
                         onValueChange = {
-                            onUpdateClick(state.avatar, state.birthday, it, state.city)
+                            onAction(EditProfileAction.UpdateAbout(it))
                         },
-                        shape = RoundedCornerShape(12.dp),
+                        shape = MaterialTheme.shapes.medium,
                         label = { Text(text = stringResource(R.string.profile_about)) },
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                         keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() })
                     )
                 }
-                Button(
+                MainButton(
+                    text = stringResource(R.string.edit_profile_save),
                     onClick = {
                         focusManager.clearFocus()
-                        onSaveClick()
+                        onAction(EditProfileAction.Save)
                     },
                     modifier = Modifier
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(vertical = 12.dp)
-                ) {
-                    Text(
-                        text = stringResource(R.string.edit_profile_save)
-                    )
-                }
+                        .fillMaxWidth()
+                )
             }
     }
 }
@@ -264,7 +252,7 @@ private fun AvatarContent(avatar: String?, onAvatarChange: (AvatarData?) -> Unit
         contentDescription = null,
         error = painterResource(R.drawable.camera),
         modifier = Modifier
-            .size(200.dp)
+            .size(MaterialTheme.dimens.profileImage)
             .clip(CircleShape)
             .background(Color.LightGray)
             .clickable {
@@ -273,13 +261,6 @@ private fun AvatarContent(avatar: String?, onAvatarChange: (AvatarData?) -> Unit
         contentScale = ContentScale.None.takeIf { avatar.isNullOrEmpty() }
             ?: ContentScale.FillBounds
     )
-}
-
-private fun Uri.getBase64ImageData(context: Context): String {
-    val contentResolver = context.contentResolver ?: return ""
-    return contentResolver.openInputStream(this)?.use {
-        Base64.getEncoder().encodeToString(it.readBytes())
-    }.orEmpty()
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -293,14 +274,16 @@ private fun BirthdayContent(birthday: String?, onBirthdayChange: (String) -> Uni
         derivedStateOf { datePickerState.selectedDateMillis != null }
     }
 
-    birthday?.let {
-        Text(
-            text = stringResource(R.string.profile_birthday, it),
-            textAlign = TextAlign.Center
-        )
-    }
-    Button(onClick = { isDialogOpen = true }) {
-        Text(text = stringResource(id = R.string.edit_profile_pick_date))
+    Column {
+        birthday?.let {
+            Text(
+                text = stringResource(R.string.profile_birthday, it),
+                textAlign = TextAlign.Center
+            )
+        }
+        Button(onClick = { isDialogOpen = true }) {
+            Text(text = stringResource(id = R.string.edit_profile_pick_date))
+        }
     }
     if (isDialogOpen)
         DatePickerDialog(
@@ -310,7 +293,7 @@ private fun BirthdayContent(birthday: String?, onBirthdayChange: (String) -> Uni
             confirmButton = {
                 Button(
                     onClick = {
-                        onBirthdayChange(convertMillisToDate(datePickerState.selectedDateMillis!!))
+                        onBirthdayChange(convertMillisToYyyyMMddFormat(datePickerState.selectedDateMillis!!))
                         isDialogOpen = false
                     },
                     enabled = isDialogConfirmEnabled
@@ -326,9 +309,4 @@ private fun BirthdayContent(birthday: String?, onBirthdayChange: (String) -> Uni
         ) {
             DatePicker(datePickerState)
         }
-}
-
-private fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-    return formatter.format(Date(millis))
 }
