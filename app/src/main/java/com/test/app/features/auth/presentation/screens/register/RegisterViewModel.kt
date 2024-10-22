@@ -24,7 +24,10 @@ class RegisterViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<RegisterViewModel>
 
-    override fun reduce(prevState: RegisterState, action: RegisterAction): Flow<RegisterState> {
+    override suspend fun reduce(
+        prevState: RegisterState,
+        action: RegisterAction
+    ): Flow<RegisterState> {
         return when (action) {
             RegisterAction.DismissError -> flowOf(prevState.copy(error = null))
             is RegisterAction.Init -> flowOf(
@@ -50,7 +53,7 @@ class RegisterViewModel @AssistedInject constructor(
     }
 
     private fun handleRegisterAction(prevState: RegisterState) =
-        registerUseCase(prevState.phone, prevState.userName, prevState.name)
+        flowOf { registerUseCase(prevState.phone, prevState.userName, prevState.name) }
             .toState(
                 onLoading = { prevState.copy(isLoading = true) },
                 onError = {

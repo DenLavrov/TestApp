@@ -25,30 +25,38 @@ class EditProfileViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<EditProfileViewModel>
 
-    override fun reduce(
+    override suspend fun reduce(
         prevState: EditProfileState,
         action: EditProfileAction
     ): Flow<EditProfileState> {
         return when (action) {
             EditProfileAction.DismissError -> flowOf(prevState.copy(error = null))
-            EditProfileAction.Init -> getProfileUseCase()
-                .map {
-                    prevState.copy(
-                        username = it.userName,
-                        phone = it.phone,
-                        name = it.name.orEmpty(),
-                        birthday = it.birthday,
-                        avatar = it.avatar,
-                        about = it.about.orEmpty(),
-                        city = it.city.orEmpty()
-                    )
-                }
-
+            EditProfileAction.Init -> handleInitAction(prevState)
             is EditProfileAction.UpdateAvatar -> flowOf(prevState.copy(avatar = action.avatar))
             is EditProfileAction.UpdateBirthday -> flowOf(prevState.copy(birthday = action.birthday))
             is EditProfileAction.UpdateAbout -> flowOf(prevState.copy(about = action.about))
             is EditProfileAction.UpdateCity -> flowOf(prevState.copy(city = action.city))
-            EditProfileAction.Save -> updateProfileUseCase(
+            EditProfileAction.Save -> handleSaveAction(prevState)
+        }
+    }
+
+    private suspend fun handleInitAction(prevState: EditProfileState) =
+        flowOf { getProfileUseCase() }
+            .map {
+                prevState.copy(
+                    username = it.userName,
+                    phone = it.phone,
+                    name = it.name.orEmpty(),
+                    birthday = it.birthday,
+                    avatar = it.avatar,
+                    about = it.about.orEmpty(),
+                    city = it.city.orEmpty()
+                )
+            }
+
+    private suspend fun handleSaveAction(prevState: EditProfileState) =
+        flowOf<Unit> {
+            updateProfileUseCase(
                 username = prevState.username,
                 phone = prevState.phone,
                 name = prevState.name,
@@ -56,14 +64,13 @@ class EditProfileViewModel @AssistedInject constructor(
                 birthday = prevState.birthday,
                 city = prevState.city,
                 avatar = prevState.avatar?.takeIf { it.base64.isNotEmpty() }
-            ).toState(
-                onContent = {
-                    effect(EditProfileEffect.Back)
-                    prevState
-                },
-                onLoading = { prevState.copy(isLoading = true) },
-                onError = { prevState.copy(error = it.localizedMessage, isLoading = false) }
             )
-        }
-    }
+        }.toState(
+            onContent = {
+                effect(EditProfileEffect.Back)
+                prevState
+            },
+            onLoading = { prevState.copy(isLoading = true) },
+            onError = { prevState.copy(error = it.localizedMessage, isLoading = false) }
+        )
 }

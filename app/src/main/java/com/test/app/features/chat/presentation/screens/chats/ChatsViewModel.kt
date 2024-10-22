@@ -23,9 +23,9 @@ class ChatsViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<ChatsViewModel>
 
-    override fun reduce(prevState: ChatsState, action: ChatsAction): Flow<ChatsState> {
+    override suspend fun reduce(prevState: ChatsState, action: ChatsAction): Flow<ChatsState> {
         return when (action) {
-            ChatsAction.Init -> getProfileUseCase()
+            ChatsAction.Init -> flowOf { getProfileUseCase() }
                 .toState(
                     onContent = {
                         prevState.copy(

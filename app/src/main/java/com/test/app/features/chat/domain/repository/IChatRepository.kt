@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface IChatRepository {
     fun getChats(): List<Chat>
-    fun getMessages(id: String): Flow<List<ChatMessage>>
-    fun sendMessage(chatId: String, message: String): Flow<Unit>
+    suspend fun getMessages(id: String): List<ChatMessage>
+    suspend fun sendMessage(chatId: String, message: String)
 }

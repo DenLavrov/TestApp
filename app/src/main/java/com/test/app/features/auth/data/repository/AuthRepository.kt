@@ -2,15 +2,13 @@ package com.test.app.features.auth.data.repository
 
 import com.test.app.core.data.Dispatchers
 import com.test.app.core.data.Storage
-import com.test.app.core.data.handleError
+import com.test.app.core.data.runHttpRequest
 import com.test.app.features.auth.data.models.AuthCodeRequest
 import com.test.app.features.auth.data.models.AuthResponse
 import com.test.app.features.auth.data.models.CheckCodeRequest
 import com.test.app.features.auth.data.models.RegisterRequest
 import com.test.app.features.auth.data.network.AuthApi
 import com.test.app.features.auth.domain.repository.IAuthRepository
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
@@ -19,17 +17,17 @@ class AuthRepository @Inject constructor(
     private val dispatchers: Dispatchers
 ) : IAuthRepository {
 
-    override fun sendCode(phone: String) = flow {
-        emit(api.sendAuthCode(AuthCodeRequest(phone)).isSuccess)
-    }.handleError().flowOn(dispatchers.io)
+    override suspend fun sendCode(phone: String) = runHttpRequest(dispatchers) {
+        api.sendAuthCode(AuthCodeRequest(phone)).isSuccess
+    }
 
-    override fun login(phone: String, code: String) = flow {
-        emit(api.checkAuthCode(CheckCodeRequest(phone, code)).save())
-    }.handleError().flowOn(dispatchers.io)
+    override suspend fun login(phone: String, code: String) = runHttpRequest(dispatchers) {
+        api.checkAuthCode(CheckCodeRequest(phone, code)).save()
+    }
 
-    override fun register(phone: String, userName: String, name: String) = flow {
-        emit(api.register(RegisterRequest(phone, name, userName)).save())
-    }.handleError().flowOn(dispatchers.io)
+    override suspend fun register(phone: String, userName: String, name: String) = runHttpRequest(dispatchers) {
+        api.register(RegisterRequest(phone, name, userName)).save()
+    }
 
     private suspend fun AuthResponse.save(): AuthResponse {
         storage.putString(Storage.REFRESH_TOKEN_KEY, refreshToken)

@@ -25,29 +25,29 @@ class ChatViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<ChatViewModel>
 
-    override fun reduce(prevState: ChatState, action: ChatAction): Flow<ChatState> {
+    override suspend fun reduce(prevState: ChatState, action: ChatAction): Flow<ChatState> {
         return when (action) {
-            is ChatAction.Init -> handleInitAction(action, prevState)
+            is ChatAction.Init -> handleInitAction(action.id, prevState)
             is ChatAction.UpdateText -> flowOf(prevState.copy(text = action.text))
-            is ChatAction.Send -> handleSendAction(action, prevState)
+            is ChatAction.Send -> handleSendAction(action.text, prevState)
         }
     }
 
     private fun handleInitAction(
-        action: ChatAction.Init,
+        chatId: String,
         prevState: ChatState
-    ) = getMessagesUseCase(action.id).toState {
+    ) = flowOf { getMessagesUseCase(chatId) }.toState {
         prevState.copy(
             messages = it,
-            id = action.id
+            id = chatId
         )
     }
 
     private fun handleSendAction(
-        action: ChatAction.Send,
+        message: String,
         prevState: ChatState
-    ) = action.text.takeIf { it.isNotEmpty() }?.let {
-        sendMessageUseCase(prevState.id, action.text)
+    ) = message.takeIf { it.isNotEmpty() }?.let {
+        flowOf { sendMessageUseCase(prevState.id, message) }
             .toState { prevState.copy(messages = it) }
             .onCompletion { dispatch(ChatAction.UpdateText("")) }
     } ?: ignoreState()

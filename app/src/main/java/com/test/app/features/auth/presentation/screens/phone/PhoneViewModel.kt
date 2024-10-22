@@ -23,7 +23,7 @@ class PhoneViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<PhoneViewModel>
 
-    override fun reduce(prevState: PhoneState, action: PhoneAction): Flow<PhoneState> {
+    override suspend fun reduce(prevState: PhoneState, action: PhoneAction): Flow<PhoneState> {
         return when (action) {
             PhoneAction.DismissError -> flowOf(prevState.copy(error = null))
             is PhoneAction.UpdatePhone -> flowOf(
@@ -45,7 +45,7 @@ class PhoneViewModel @AssistedInject constructor(
     }
 
     private fun handleSendCodeAction(prevState: PhoneState) =
-        sendCodeUseCase(prevState.countryNumber + prevState.phone)
+        flowOf { sendCodeUseCase(prevState.countryNumber + prevState.phone) }
             .toState(
                 onError = {
                     if (it is ValidationError) {

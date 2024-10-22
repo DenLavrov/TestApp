@@ -34,7 +34,7 @@ class MainViewModel @AssistedInject constructor(
         }
     }
 
-    override fun reduce(prevState: MainState, action: MainAction): Flow<MainState> {
+    override suspend fun reduce(prevState: MainState, action: MainAction): Flow<MainState> {
         return when (action) {
             is MainAction.Update -> flowOf(prevState.copy(isAuthorized = action.isAuthorized))
         }

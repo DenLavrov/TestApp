@@ -26,29 +26,31 @@ class ProfileViewModel @AssistedInject constructor(
     @AssistedFactory
     interface Factory : ViewModelAssistedFactory<ProfileViewModel>
 
-    override fun reduce(prevState: ProfileState, action: ProfileAction): Flow<ProfileState> {
+    override suspend fun reduce(prevState: ProfileState, action: ProfileAction): Flow<ProfileState> {
         return when (action) {
-            ProfileAction.Logout -> logoutUseCase().ignoreState()
+            ProfileAction.Logout -> ignoreState { logoutUseCase() }
             ProfileAction.DismissError -> flowOf(prevState.copy(error = null))
                 .onCompletion { effect(ProfileEffect.Back) }
-
-            ProfileAction.Init -> getProfileUseCase()
-                .toState(
-                    onContent = {
-                        prevState.copy(
-                            birthday = it.birthday,
-                            userName = it.userName,
-                            avatar = it.avatar?.filename.orEmpty(),
-                            about = it.about,
-                            zodiac = it.zodiacSign,
-                            phone = it.phone,
-                            city = it.city,
-                            isLoading = false
-                        )
-                    },
-                    onLoading = { prevState.copy(isLoading = true) },
-                    onError = { prevState.copy(error = it.localizedMessage) }
-                )
+            ProfileAction.Init -> handleInitAction(prevState)
         }
     }
+
+    private fun handleInitAction(prevState: ProfileState) =
+        flowOf { getProfileUseCase() }
+            .toState(
+                onContent = {
+                    prevState.copy(
+                        birthday = it.birthday,
+                        userName = it.userName,
+                        avatar = it.avatar?.filename.orEmpty(),
+                        about = it.about,
+                        zodiac = it.zodiacSign,
+                        phone = it.phone,
+                        city = it.city,
+                        isLoading = false
+                    )
+                },
+                onLoading = { prevState.copy(isLoading = true) },
+                onError = { prevState.copy(error = it.localizedMessage) }
+            )
 }

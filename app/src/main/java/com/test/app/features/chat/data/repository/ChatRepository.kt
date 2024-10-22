@@ -4,13 +4,9 @@ import com.test.app.core.data.Dispatchers
 import com.test.app.features.chat.data.data_source.IChatDataSource
 import com.test.app.features.chat.data.models.ChatMessage
 import com.test.app.features.chat.domain.repository.IChatRepository
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import java.time.OffsetDateTime
+import java.util.concurrent.ThreadLocalRandom
 import javax.inject.Inject
-import kotlin.random.Random
 
 class ChatRepository @Inject constructor(
     private val chatDataSource: IChatDataSource,
@@ -18,20 +14,18 @@ class ChatRepository @Inject constructor(
 ) : IChatRepository {
     override fun getChats() = chatDataSource.chatList
 
-    override fun getMessages(id: String) = flow {
-        emit(chatDataSource.chatMessages[id]!!)
-    }.flowOn(dispatchers.default)
+    override suspend fun getMessages(id: String) = dispatchers.withDefault {
+        chatDataSource.chatMessages[id]!!
+    }
 
-    override fun sendMessage(chatId: String, message: String) = flow {
-        emit(
-            chatDataSource.sendMessage(
-                chatId, ChatMessage(
-                    Random.nextInt(),
-                    message,
-                    ChatMessage.Type.OUTGOING,
-                    OffsetDateTime.now()
-                )
+    override suspend fun sendMessage(chatId: String, message: String) = dispatchers.withDefault {
+        chatDataSource.sendMessage(
+            chatId, ChatMessage(
+                ThreadLocalRandom.current().nextInt(),
+                message,
+                ChatMessage.Type.OUTGOING,
+                OffsetDateTime.now()
             )
         )
-    }.flowOn(dispatchers.default)
+    }
 }

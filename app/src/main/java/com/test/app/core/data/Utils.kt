@@ -1,15 +1,18 @@
 package com.test.app.core.data
 
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import retrofit2.HttpException
 
-fun <T> Flow<T>.handleError() = catch {
-    if (it is HttpException) {
-        val jsonError = it.response()?.errorBody()?.string()?.let { body -> JSONObject(body) }
+suspend inline fun <T> runHttpRequest(
+    dispatchers: Dispatchers,
+    crossinline action: suspend () -> T
+) = withContext(dispatchers.io) {
+    try {
+        action()
+    } catch (t: HttpException) {
+        val jsonError = t.response()?.errorBody()?.string()?.let { body -> JSONObject(body) }
         val message = jsonError?.getJSONObject("detail")?.getString("message")
         throw Throwable(message)
     }
-    throw it
 }
