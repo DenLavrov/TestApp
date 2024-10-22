@@ -4,14 +4,16 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.toRoute
-import com.test.app.features.chat.presentation.di.ChatComponentHolder
+import com.test.app.features.chat.di.ChatComponentHolder
 import com.test.app.features.chat.presentation.screens.chat.ChatScreen
 import com.test.app.features.chat.presentation.screens.chats.ChatsScreen
 import getVm
 
-fun NavGraphBuilder.chatGraph(navController: NavController,
-                              beforeInit: () -> Unit,
-                              onOpenProfile: () -> Unit) {
+fun NavGraphBuilder.chatGraph(
+    navController: NavController,
+    beforeInit: () -> Unit,
+    onOpenProfile: () -> Unit
+) {
     composable<Chats> {
         beforeInit()
         ChatsScreen(

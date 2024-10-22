@@ -5,7 +5,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navOptions
 import androidx.navigation.toRoute
-import com.test.app.features.auth.presentation.di.AuthComponentHolder
+import com.test.app.features.auth.di.AuthComponentHolder
 import com.test.app.features.auth.presentation.screens.code.CodeScreen
 import com.test.app.features.auth.presentation.screens.phone.PhoneScreen
 import com.test.app.features.auth.presentation.screens.register.RegisterScreen

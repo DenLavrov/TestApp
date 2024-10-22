@@ -1,7 +1,7 @@
 package com.test.app.features.auth.domain.validation
 
 import com.arpitkatiyarprojects.countrypicker.utils.CountryPickerUtils
-import com.test.app.features.auth.presentation.di.AuthScope
+import com.test.app.features.auth.di.AuthScope
 import javax.inject.Inject
 
 @AuthScope

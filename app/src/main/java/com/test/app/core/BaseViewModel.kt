@@ -8,13 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -34,9 +34,8 @@ abstract class BaseViewModel<T, Action>(
         json.decodeFromString(serializer, it)
     } ?: initialState)
     val state = _state
-        .map {
+        .onEach {
             savedStateHandle[STATE_KEY] = json.encodeToString(serializer, it)
-            it
         }.stateIn(
             viewModelScope,
             started = SharingStarted.WhileSubscribed(5000L),

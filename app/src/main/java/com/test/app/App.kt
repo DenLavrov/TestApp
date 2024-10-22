@@ -7,6 +7,6 @@ import com.test.app.main.presentation.di.AppComponentHolder
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        AppComponentHolder.init(CoreComponentHolder.init(applicationContext))
+        AppComponentHolder.init(CoreComponentHolder.init(this))
     }
 }

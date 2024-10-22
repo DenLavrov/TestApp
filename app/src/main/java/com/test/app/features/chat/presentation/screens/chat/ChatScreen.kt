@@ -90,7 +90,7 @@ private fun ChatScreenContent(
     state: ChatState,
     title: String,
     image: String,
-    onAction: (ChatAction) -> Unit,
+    dispatch: (ChatAction) -> Unit,
     onBackClick: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
@@ -134,12 +134,12 @@ private fun ChatScreenContent(
             }
             TextField(
                 value = state.text,
-                onValueChange = { onAction(ChatAction.UpdateText(it)) },
+                onValueChange = { dispatch(ChatAction.UpdateText(it)) },
                 trailingIcon = {
                     IconButton(
                         onClick = {
                             focusManager.clearFocus()
-                            onAction(ChatAction.Send(state.text))
+                            dispatch(ChatAction.Send(state.text))
                         }
                     ) {
                         Icon(
@@ -161,7 +161,7 @@ private fun ChatScreenContent(
                 keyboardActions = KeyboardActions(
                     onSend = {
                         focusManager.clearFocus()
-                        onAction(ChatAction.Send(state.text))
+                        dispatch(ChatAction.Send(state.text))
                     }
                 )
             )

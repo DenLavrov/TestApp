@@ -1,4 +1,4 @@
-package com.test.app.features.chat.presentation.di
+package com.test.app.features.chat.di
 
 import com.test.app.core.di.BaseComponentHolder
 import com.test.app.features.profile.domain.use_cases.GetProfileUseCase

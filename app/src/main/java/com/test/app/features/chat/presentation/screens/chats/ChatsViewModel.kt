@@ -3,7 +3,7 @@ package com.test.app.features.chat.presentation.screens.chats
 import androidx.lifecycle.SavedStateHandle
 import com.test.app.core.BaseViewModel
 import com.test.app.core.di.ViewModelAssistedFactory
-import com.test.app.features.chat.data.repository.IChatRepository
+import com.test.app.features.chat.domain.repository.IChatRepository
 import com.test.app.features.profile.domain.use_cases.GetProfileUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

@@ -1,4 +1,4 @@
-package com.test.app.features.auth.presentation.di
+package com.test.app.features.auth.di
 
 import com.test.app.core.di.BaseComponentHolder
 import com.test.app.core.di.CoreComponent

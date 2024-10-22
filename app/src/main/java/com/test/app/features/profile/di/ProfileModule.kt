@@ -1,4 +1,4 @@
-package com.test.app.features.profile.presentation.di
+package com.test.app.features.profile.di
 
 import com.test.app.core.di.ViewModelAssistedFactory
 import com.test.app.features.profile.data.network.ProfileApi

@@ -1,4 +1,4 @@
-package com.test.app.features.chat.presentation.di
+package com.test.app.features.chat.di
 
 import javax.inject.Scope
 

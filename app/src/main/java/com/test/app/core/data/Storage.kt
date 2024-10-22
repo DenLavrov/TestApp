@@ -7,6 +7,7 @@ import com.test.app.core.di.json
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.serialization.encodeToString
 import javax.inject.Inject
@@ -21,7 +22,7 @@ class Storage @Inject constructor(private val sharedPreferences: SharedPreferenc
     }
 
     private val _keysFlow = MutableSharedFlow<String>()
-    val keysFlow: Flow<String> = _keysFlow
+    val keysFlow = _keysFlow.asSharedFlow()
 
     fun getString(key: String) = sharedPreferences.getString(key, null)
 
