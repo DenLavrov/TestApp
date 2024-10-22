@@ -65,7 +65,7 @@ abstract class BaseViewModel<T, Action>(
         emit(actualState)
     }
 
-    protected fun <S> flowOf(action: suspend () -> S) = flow { emit(action()) }
+    protected inline fun <S> flowOf(crossinline action: suspend () -> S) = flow { emit(action()) }
 
     protected fun <S> Flow<S>.toState(
         onLoading: (() -> T)? = null,
