@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.emitAll
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
@@ -45,7 +44,7 @@ abstract class BaseViewModel<T, Action>(
     private val _effects = MutableSharedFlow<Any>()
     val effects = _effects.asSharedFlow()
 
-    val actualState: T
+    private val actualState: T
         get() = state.value
 
     fun dispatch(action: Action) {
@@ -61,11 +60,6 @@ abstract class BaseViewModel<T, Action>(
     protected fun Flow<*>.ignoreState(): Flow<T> = map { actualState }
 
     protected fun ignoreState(): Flow<T> = flowOf(actualState)
-
-    protected inline fun ignoreState(crossinline action: suspend () -> Unit): Flow<T> = flow {
-        action()
-        emit(actualState)
-    }
 
     protected fun <S> Flow<S>.toState(
         onLoading: (() -> T)? = null,

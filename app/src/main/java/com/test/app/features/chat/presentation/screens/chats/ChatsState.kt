@@ -3,11 +3,12 @@ package com.test.app.features.chat.presentation.screens.chats
 import androidx.compose.runtime.Immutable
 import com.test.app.features.chat.data.models.Chat
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.Transient
 
 @Immutable
 @Serializable
-data class ChatsState(val data: List<Chat>, val avatar: String?) {
+data class ChatsState(@Transient val data: List<Chat> = emptyList(), val avatar: String?) {
     companion object {
-        val empty = ChatsState(emptyList(), null)
+        val empty = ChatsState(avatar = null)
     }
 }

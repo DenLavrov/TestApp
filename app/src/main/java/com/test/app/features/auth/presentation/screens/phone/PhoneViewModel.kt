@@ -40,21 +40,24 @@ class PhoneViewModel @AssistedInject constructor(
                 )
             )
 
-            PhoneAction.SendCode -> sendCodeUseCase(prevState.countryNumber + prevState.phone)
-                .toState(
-                    onError = {
-                        if (it is ValidationError) {
-                            prevState.copy(isValid = false, isLoading = false)
-                        } else {
-                            prevState.copy(error = it.localizedMessage, isLoading = false)
-                        }
-                    },
-                    onLoading = { prevState.copy(isLoading = true) },
-                    onContent = {
-                        effect(PhoneEffect.CodeSent(it))
-                        prevState
-                    }
-                )
+            PhoneAction.SendCode -> handleSendCodeAction(prevState)
         }
     }
+
+    private fun handleSendCodeAction(prevState: PhoneState) =
+        sendCodeUseCase(prevState.countryNumber + prevState.phone)
+            .toState(
+                onError = {
+                    if (it is ValidationError) {
+                        prevState.copy(isValid = false, isLoading = false)
+                    } else {
+                        prevState.copy(error = it.localizedMessage, isLoading = false)
+                    }
+                },
+                onLoading = { prevState.copy(isLoading = true) },
+                onContent = {
+                    effect(PhoneEffect.CodeSent(it))
+                    prevState
+                }
+            )
 }

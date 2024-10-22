@@ -45,31 +45,30 @@ class RegisterViewModel @AssistedInject constructor(
                 )
             )
 
-            is RegisterAction.Register -> registerUseCase(
-                prevState.phone,
-                prevState.userName,
-                prevState.name
-            )
-                .toState(
-                    onLoading = { prevState.copy(isLoading = true) },
-                    onError = {
-                        when (it) {
-                            is UserNameValidationError -> prevState.copy(
-                                isUserNameValid = false,
-                                isNameValid = true,
-                                isLoading = false
-                            )
-
-                            is NameValidationError -> prevState.copy(
-                                isNameValid = false,
-                                isUserNameValid = true,
-                                isLoading = false
-                            )
-
-                            else -> prevState.copy(error = it.localizedMessage, isLoading = false)
-                        }
-                    }
-                )
+            is RegisterAction.Register -> handleRegisterAction(prevState)
         }
     }
+
+    private fun handleRegisterAction(prevState: RegisterState) =
+        registerUseCase(prevState.phone, prevState.userName, prevState.name)
+            .toState(
+                onLoading = { prevState.copy(isLoading = true) },
+                onError = {
+                    when (it) {
+                        is UserNameValidationError -> prevState.copy(
+                            isUserNameValid = false,
+                            isNameValid = true,
+                            isLoading = false
+                        )
+
+                        is NameValidationError -> prevState.copy(
+                            isNameValid = false,
+                            isUserNameValid = true,
+                            isLoading = false
+                        )
+
+                        else -> prevState.copy(error = it.localizedMessage, isLoading = false)
+                    }
+                }
+            )
 }

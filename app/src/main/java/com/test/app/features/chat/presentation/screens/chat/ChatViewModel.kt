@@ -3,7 +3,6 @@ package com.test.app.features.chat.presentation.screens.chat
 import androidx.lifecycle.SavedStateHandle
 import com.test.app.core.BaseViewModel
 import com.test.app.core.di.ViewModelAssistedFactory
-import com.test.app.features.chat.domain.repository.IChatRepository
 import com.test.app.features.chat.domain.use_cases.GetMessagesUseCase
 import com.test.app.features.chat.domain.use_cases.SendMessageUseCase
 import dagger.assisted.Assisted
@@ -28,19 +27,28 @@ class ChatViewModel @AssistedInject constructor(
 
     override fun reduce(prevState: ChatState, action: ChatAction): Flow<ChatState> {
         return when (action) {
-            is ChatAction.Init -> getMessagesUseCase(action.id).toState {
-                prevState.copy(
-                    messages = it,
-                    id = action.id
-                )
-            }
-
+            is ChatAction.Init -> handleInitAction(action, prevState)
             is ChatAction.UpdateText -> flowOf(prevState.copy(text = action.text))
-            is ChatAction.Send -> action.text.takeIf { it.isNotEmpty() }?.let {
-                sendMessageUseCase(prevState.id, action.text)
-                    .toState { prevState.copy(messages = it) }
-                    .onCompletion { dispatch(ChatAction.UpdateText("")) }
-            } ?: ignoreState()
+            is ChatAction.Send -> handleSendAction(action, prevState)
         }
     }
+
+    private fun handleInitAction(
+        action: ChatAction.Init,
+        prevState: ChatState
+    ) = getMessagesUseCase(action.id).toState {
+        prevState.copy(
+            messages = it,
+            id = action.id
+        )
+    }
+
+    private fun handleSendAction(
+        action: ChatAction.Send,
+        prevState: ChatState
+    ) = action.text.takeIf { it.isNotEmpty() }?.let {
+        sendMessageUseCase(prevState.id, action.text)
+            .toState { prevState.copy(messages = it) }
+            .onCompletion { dispatch(ChatAction.UpdateText("")) }
+    } ?: ignoreState()
 }
