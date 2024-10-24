@@ -5,7 +5,6 @@ import com.test.app.core.data.refresh.models.RefreshTokenRequest
 import com.test.app.core.data.refresh.models.RefreshTokenResponse
 import dagger.Lazy
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.cancel
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.sync.Mutex
@@ -27,7 +26,7 @@ class UnauthorizedHandler @Inject constructor(
     override fun authenticate(route: Route?, response: Response): Request {
         try {
             runBlocking(currentJob.value) {
-                mutex.withLock(currentJob.value) {
+                mutex.withLock {
                     try {
                         val refreshToken = storage.getString(Storage.REFRESH_TOKEN_KEY)!!
                         refreshApi.get().refreshToken(RefreshTokenRequest(refreshToken)).save()
@@ -41,7 +40,7 @@ class UnauthorizedHandler @Inject constructor(
             }
         } catch (_: CancellationException) {
         } finally {
-            if (mutex.holdsLock(currentJob.value).not())
+            if (mutex.isLocked.not())
                 currentJob = lazy { Job() }
         }
         return response.request
