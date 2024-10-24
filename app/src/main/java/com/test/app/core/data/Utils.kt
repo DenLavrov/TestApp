@@ -1,13 +1,13 @@
 package com.test.app.core.data
 
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.CoroutineScope
 import org.json.JSONObject
 import retrofit2.HttpException
 
 suspend inline fun <T> runHttpRequest(
     dispatchers: Dispatchers,
-    crossinline action: suspend () -> T
-) = withContext(dispatchers.io) {
+    crossinline action: suspend CoroutineScope.() -> T
+) = dispatchers.withIo {
     try {
         action()
     } catch (t: HttpException) {

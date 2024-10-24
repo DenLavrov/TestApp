@@ -42,7 +42,7 @@ abstract class BaseViewModel<T, Action>(
             initialValue = initialState
         )
 
-    private val _effects = MutableSharedFlow<Any>()
+    private val _effects = MutableSharedFlow<Any>(1)
     val effects = _effects.asSharedFlow()
 
     val actualState: T
@@ -58,7 +58,7 @@ abstract class BaseViewModel<T, Action>(
 
     protected abstract suspend fun reduce(prevState: T, action: Action): Flow<T>
 
-    protected fun ignoreState(): Flow<T> = flowOf(actualState)
+    protected fun ignoreState() = flowOf(actualState)
 
     protected inline fun ignoreState(crossinline action: suspend () -> Unit) = flow {
         action()

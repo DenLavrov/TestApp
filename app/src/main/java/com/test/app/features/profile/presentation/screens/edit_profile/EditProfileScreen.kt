@@ -9,7 +9,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,6 +34,7 @@ import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -53,6 +53,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.test.app.R
+import com.test.app.core.di.CoreComponentHolder
 import com.test.app.core.presentation.utils.ObserveLifecycleEvents
 import com.test.app.core.presentation.utils.convertMillisToYyyyMMddFormat
 import com.test.app.core.presentation.utils.getBase64ImageData
@@ -61,6 +62,7 @@ import com.test.app.core.presentation.views.SimpleScaffold
 import com.test.app.features.profile.data.models.AvatarData
 import com.test.app.ui.theme.TestAppTheme
 import com.test.app.ui.theme.dimens
+import kotlinx.coroutines.launch
 
 @Composable
 fun EditProfileScreen(viewModel: EditProfileViewModel, onBack: () -> Unit) {
@@ -236,14 +238,21 @@ private fun EditProfileContent(
 @Composable
 private fun AvatarContent(avatar: String?, onAvatarChange: (AvatarData?) -> Unit) {
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     val pickImageLauncher =
         rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) {
             it?.let { uri ->
-                onAvatarChange(
-                    AvatarData(
-                        uri.toString(), uri.getBase64ImageData(context)
+                coroutineScope.launch {
+                    onAvatarChange(
+                        AvatarData(
+                            uri.toString(),
+                            uri.getBase64ImageData(
+                                context,
+                                CoreComponentHolder.get().provideDispatchers()
+                            )
+                        )
                     )
-                )
+                }
             }
         }
 

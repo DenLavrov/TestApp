@@ -1,6 +1,7 @@
 package com.test.app.core.di
 
 import android.content.Context
+import com.test.app.core.data.Dispatchers
 import com.test.app.core.data.Storage
 import dagger.BindsInstance
 import dagger.Component
@@ -20,4 +21,6 @@ interface CoreComponent {
     fun provideRetrofit(): Retrofit
 
     fun provideStorage(): Storage
+
+    fun provideDispatchers(): Dispatchers
 }

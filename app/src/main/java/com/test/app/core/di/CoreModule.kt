@@ -3,6 +3,7 @@ package com.test.app.core.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import com.test.app.core.data.Dispatchers
 import com.test.app.core.data.interceptors.AuthInterceptor
 import com.test.app.core.data.interceptors.ConnectionInterceptor
 import com.test.app.core.data.refresh.RefreshApi
@@ -56,6 +57,10 @@ class CoreModule {
             .addInterceptor(loggingInterceptor)
             .authenticator(authenticator)
             .build()
+
+    @Provides
+    @CoreScope
+    fun provideDispatchers() = Dispatchers()
 
     @Provides
     @CoreScope

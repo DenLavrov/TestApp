@@ -33,14 +33,14 @@ class UnauthorizedHandler @Inject constructor(
                         refreshApi.get().refreshToken(RefreshTokenRequest(refreshToken)).save()
                     } catch (t: Throwable) {
                         RefreshTokenResponse.empty.save()
+                        ensureActive()
                     } finally {
-                        cancel()
+                        currentJob.value.cancel()
                     }
                 }
             }
         } catch (_: CancellationException) {
-        }
-        finally {
+        } finally {
             if (mutex.holdsLock(currentJob.value).not())
                 currentJob = lazy { Job() }
         }

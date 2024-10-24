@@ -10,6 +10,7 @@ class ViewModelFactory(
     owner: SavedStateRegistryOwner
 ) : AbstractSavedStateViewModelFactory(owner, null) {
 
+    @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(
         key: String,
         modelClass: Class<T>,
