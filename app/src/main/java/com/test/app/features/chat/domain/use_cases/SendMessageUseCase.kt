@@ -1,6 +1,6 @@
 package com.test.app.features.chat.domain.use_cases
 
-import com.test.app.features.chat.data.models.ChatMessage
+import com.test.app.features.chat.domain.models.ChatMessage
 import com.test.app.features.chat.domain.repository.IChatRepository
 import com.test.app.features.chat.di.ChatScope
 import javax.inject.Inject

@@ -1,8 +1,8 @@
 package com.test.app.features.chat.data.repository
 
-import com.test.app.core.data.Dispatchers
+import com.test.app.core.Dispatchers
 import com.test.app.features.chat.data.data_source.IChatDataSource
-import com.test.app.features.chat.data.models.ChatMessage
+import com.test.app.features.chat.domain.models.ChatMessage
 import com.test.app.features.chat.domain.repository.IChatRepository
 import java.time.OffsetDateTime
 import java.util.concurrent.ThreadLocalRandom

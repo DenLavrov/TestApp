@@ -1,16 +1,16 @@
 package com.test.app.features.auth.presentation.screens.register
 
 import androidx.lifecycle.SavedStateHandle
-import com.test.app.core.BaseViewModel
-import com.test.app.features.auth.domain.models.NameValidationError
-import com.test.app.features.auth.domain.models.UserNameValidationError
+import com.test.app.core.presentation.vm.BaseViewModel
+import com.test.app.features.auth.domain.exceptions.NameValidationException
+import com.test.app.features.auth.domain.exceptions.UserNameValidationException
 import com.test.app.features.auth.domain.use_cases.RegisterUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 
 class RegisterViewModel @AssistedInject constructor(
     private val registerUseCase: RegisterUseCase,
@@ -58,13 +58,13 @@ class RegisterViewModel @AssistedInject constructor(
                 onLoading = { prevState.copy(isLoading = true) },
                 onError = {
                     when (it) {
-                        is UserNameValidationError -> prevState.copy(
+                        is UserNameValidationException -> prevState.copy(
                             isUserNameValid = false,
                             isNameValid = true,
                             isLoading = false
                         )
 
-                        is NameValidationError -> prevState.copy(
+                        is NameValidationException -> prevState.copy(
                             isNameValid = false,
                             isUserNameValid = true,
                             isLoading = false

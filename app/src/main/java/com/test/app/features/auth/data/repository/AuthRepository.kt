@@ -1,6 +1,6 @@
 package com.test.app.features.auth.data.repository
 
-import com.test.app.core.data.Dispatchers
+import com.test.app.core.Dispatchers
 import com.test.app.core.data.Storage
 import com.test.app.core.data.runHttpRequest
 import com.test.app.features.auth.data.models.AuthCodeRequest
@@ -22,11 +22,13 @@ class AuthRepository @Inject constructor(
     }
 
     override suspend fun login(phone: String, code: String) = runHttpRequest(dispatchers) {
-        api.checkAuthCode(CheckCodeRequest(phone, code)).save()
+        api.checkAuthCode(CheckCodeRequest(phone, code)).save().isUserExists ?: false
     }
 
-    override suspend fun register(phone: String, userName: String, name: String) = runHttpRequest(dispatchers) {
-        api.register(RegisterRequest(phone, name, userName)).save()
+    override suspend fun register(phone: String, userName: String, name: String) {
+        runHttpRequest(dispatchers) {
+            api.register(RegisterRequest(phone, name, userName)).save()
+        }
     }
 
     private suspend fun AuthResponse.save(): AuthResponse {

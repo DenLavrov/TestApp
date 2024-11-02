@@ -1,4 +1,4 @@
-package com.test.app.core.data
+package com.test.app.core
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

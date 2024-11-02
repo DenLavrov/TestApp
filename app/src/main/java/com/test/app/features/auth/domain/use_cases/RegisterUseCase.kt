@@ -1,8 +1,8 @@
 package com.test.app.features.auth.domain.use_cases
 
 import com.test.app.features.auth.di.AuthScope
-import com.test.app.features.auth.domain.models.NameValidationError
-import com.test.app.features.auth.domain.models.UserNameValidationError
+import com.test.app.features.auth.domain.exceptions.NameValidationException
+import com.test.app.features.auth.domain.exceptions.UserNameValidationException
 import com.test.app.features.auth.domain.repository.IAuthRepository
 import com.test.app.features.auth.domain.validation.AuthValidator
 import javax.inject.Inject
@@ -14,9 +14,9 @@ class RegisterUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(phone: String, userName: String, name: String) =
         if (validator.validateUserName(userName).not()) {
-            throw UserNameValidationError()
+            throw UserNameValidationException()
         } else if (validator.validateName(name).not()) {
-            throw NameValidationError()
+            throw NameValidationException()
         } else {
             authRepository.register(phone, userName, name)
         }

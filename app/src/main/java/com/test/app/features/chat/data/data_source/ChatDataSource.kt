@@ -1,7 +1,7 @@
 package com.test.app.features.chat.data.data_source
 
-import com.test.app.features.chat.data.models.Chat
-import com.test.app.features.chat.data.models.ChatMessage
+import com.test.app.features.chat.domain.models.Chat
+import com.test.app.features.chat.domain.models.ChatMessage
 import java.time.OffsetDateTime
 import java.util.UUID
 import java.util.concurrent.atomic.AtomicReference

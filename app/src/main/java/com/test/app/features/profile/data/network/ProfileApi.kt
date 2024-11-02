@@ -1,6 +1,6 @@
 package com.test.app.features.profile.data.network
 
-import com.test.app.features.profile.data.models.ProfileResponse
+import com.test.app.features.profile.domain.models.response.ProfileResponse
 import com.test.app.features.profile.data.models.UpdateProfileRequest
 import retrofit2.http.Body
 import retrofit2.http.GET

@@ -59,7 +59,7 @@ import com.test.app.core.presentation.utils.convertMillisToYyyyMMddFormat
 import com.test.app.core.presentation.utils.getBase64ImageData
 import com.test.app.core.presentation.views.MainButton
 import com.test.app.core.presentation.views.SimpleScaffold
-import com.test.app.features.profile.data.models.AvatarData
+import com.test.app.features.profile.domain.models.AvatarData
 import com.test.app.ui.theme.TestAppTheme
 import com.test.app.ui.theme.dimens
 import kotlinx.coroutines.launch

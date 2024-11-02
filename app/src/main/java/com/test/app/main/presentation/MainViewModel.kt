@@ -2,9 +2,9 @@ package com.test.app.main.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.test.app.core.BaseViewModel
+import com.test.app.core.presentation.vm.BaseViewModel
 import com.test.app.core.data.Storage
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.main.data.repository.IMainRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory

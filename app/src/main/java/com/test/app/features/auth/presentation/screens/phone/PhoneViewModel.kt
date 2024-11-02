@@ -1,15 +1,15 @@
 package com.test.app.features.auth.presentation.screens.phone
 
 import androidx.lifecycle.SavedStateHandle
-import com.test.app.core.BaseViewModel
-import com.test.app.features.auth.domain.models.ValidationError
+import com.test.app.core.presentation.vm.BaseViewModel
+import com.test.app.features.auth.domain.exceptions.ValidationException
 import com.test.app.features.auth.domain.use_cases.SendCodeUseCase
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 
 class PhoneViewModel @AssistedInject constructor(
     private val sendCodeUseCase: SendCodeUseCase,
@@ -48,7 +48,7 @@ class PhoneViewModel @AssistedInject constructor(
         flowOf { sendCodeUseCase(prevState.countryNumber + prevState.phone) }
             .toState(
                 onError = {
-                    if (it is ValidationError) {
+                    if (it is ValidationException) {
                         prevState.copy(isValid = false, isLoading = false)
                     } else {
                         prevState.copy(error = it.localizedMessage, isLoading = false)

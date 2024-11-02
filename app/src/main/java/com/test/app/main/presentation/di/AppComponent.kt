@@ -1,7 +1,7 @@
 package com.test.app.main.presentation.di
 
 import com.test.app.core.di.CoreComponent
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.main.presentation.MainViewModel
 import dagger.Component
 

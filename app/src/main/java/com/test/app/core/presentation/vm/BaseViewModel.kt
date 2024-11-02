@@ -1,9 +1,9 @@
-package com.test.app.core
+package com.test.app.core.presentation.vm
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.test.app.core.di.json
+import com.test.app.core.json
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package com.test.app.features.profile.data.models
+package com.test.app.features.profile.domain.models.response
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

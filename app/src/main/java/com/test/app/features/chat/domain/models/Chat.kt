@@ -1,4 +1,4 @@
-package com.test.app.features.chat.data.models
+package com.test.app.features.chat.domain.models
 
 import kotlinx.serialization.Serializable
 

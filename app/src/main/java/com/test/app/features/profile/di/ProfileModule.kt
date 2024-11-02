@@ -1,6 +1,6 @@
 package com.test.app.features.profile.di
 
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.profile.data.network.ProfileApi
 import com.test.app.features.profile.data.repository.ProfileRepository
 import com.test.app.features.profile.domain.repository.IProfileRepository

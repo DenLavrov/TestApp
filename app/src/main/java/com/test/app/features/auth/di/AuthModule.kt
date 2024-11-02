@@ -1,6 +1,6 @@
 package com.test.app.features.auth.di
 
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.auth.data.network.AuthApi
 import com.test.app.features.auth.data.repository.AuthRepository
 import com.test.app.features.auth.domain.repository.IAuthRepository

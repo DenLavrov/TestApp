@@ -1,6 +1,6 @@
 package com.test.app.features.profile.presentation.screens.edit_profile
 
-import com.test.app.features.profile.data.models.AvatarData
+import com.test.app.features.profile.domain.models.AvatarData
 
 sealed class EditProfileAction {
     data object Save : EditProfileAction()

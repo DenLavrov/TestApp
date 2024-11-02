@@ -1,7 +1,7 @@
 package com.test.app.features.profile.domain.use_cases
 
-import com.test.app.features.profile.data.models.AvatarData
 import com.test.app.features.profile.di.ProfileScope
+import com.test.app.features.profile.domain.models.AvatarData
 import com.test.app.features.profile.domain.models.Profile
 import com.test.app.features.profile.domain.repository.IProfileRepository
 import javax.inject.Inject

@@ -1,5 +1,6 @@
 package com.test.app.features.profile.data.models
 
+import com.test.app.features.profile.domain.models.AvatarData
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
@@ -12,10 +13,4 @@ data class UpdateProfileRequest(
     val birthday: String?,
     val city: String?,
     @SerialName("status") val about: String?
-)
-
-@Serializable
-data class AvatarData(
-    val filename: String,
-    @SerialName("base_64") val base64: String
 )

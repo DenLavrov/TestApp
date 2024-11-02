@@ -1,8 +1,8 @@
 package com.test.app.features.chat.presentation.screens.chat
 
 import androidx.lifecycle.SavedStateHandle
-import com.test.app.core.BaseViewModel
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.BaseViewModel
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.chat.domain.use_cases.GetMessagesUseCase
 import com.test.app.features.chat.domain.use_cases.SendMessageUseCase
 import dagger.assisted.Assisted

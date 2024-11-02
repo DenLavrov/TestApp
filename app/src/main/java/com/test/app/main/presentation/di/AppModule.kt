@@ -1,6 +1,6 @@
 package com.test.app.main.presentation.di
 
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.main.data.repository.MainRepository
 import com.test.app.main.data.repository.IMainRepository
 import com.test.app.main.presentation.MainViewModel

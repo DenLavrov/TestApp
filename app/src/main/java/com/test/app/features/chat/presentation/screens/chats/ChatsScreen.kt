@@ -28,7 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.test.app.R
 import com.test.app.core.presentation.views.SimpleScaffold
-import com.test.app.features.chat.data.models.Chat
+import com.test.app.features.chat.domain.models.Chat
 import com.test.app.ui.theme.TestAppTheme
 import com.test.app.ui.theme.dimens
 import java.util.UUID

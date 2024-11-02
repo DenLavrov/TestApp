@@ -1,4 +1,4 @@
-package com.test.app.core.di
+package com.test.app.core.presentation.vm
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

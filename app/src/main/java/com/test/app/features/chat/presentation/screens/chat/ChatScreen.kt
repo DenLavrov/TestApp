@@ -32,7 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.test.app.R
 import com.test.app.core.presentation.views.SimpleScaffold
 import com.test.app.core.presentation.views.TriangleEdgeShape
-import com.test.app.features.chat.data.models.ChatMessage
+import com.test.app.features.chat.domain.models.ChatMessage
 import com.test.app.ui.theme.TestAppTheme
 import com.test.app.ui.theme.chatBackground
 import com.test.app.ui.theme.dimens

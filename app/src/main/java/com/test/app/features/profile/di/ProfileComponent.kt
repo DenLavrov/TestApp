@@ -1,7 +1,7 @@
 package com.test.app.features.profile.di
 
 import com.test.app.core.di.CoreComponent
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.profile.domain.repository.IProfileRepository
 import com.test.app.features.profile.domain.use_cases.GetProfileUseCase
 import com.test.app.features.profile.presentation.screens.edit_profile.EditProfileViewModel

@@ -1,7 +1,7 @@
 package com.test.app.features.chat.presentation.screens.chats
 
 import androidx.compose.runtime.Immutable
-import com.test.app.features.chat.data.models.Chat
+import com.test.app.features.chat.domain.models.Chat
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
 

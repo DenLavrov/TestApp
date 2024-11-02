@@ -1,12 +1,12 @@
 package com.test.app.features.profile.data.repository
 
-import com.test.app.core.data.Dispatchers
+import com.test.app.core.Dispatchers
 import com.test.app.core.data.Storage
 import com.test.app.core.data.runHttpRequest
-import com.test.app.features.profile.data.models.AvatarData
-import com.test.app.features.profile.data.models.ProfileData
 import com.test.app.features.profile.data.models.UpdateProfileRequest
 import com.test.app.features.profile.data.network.ProfileApi
+import com.test.app.features.profile.domain.models.AvatarData
+import com.test.app.features.profile.domain.models.response.ProfileData
 import com.test.app.features.profile.domain.repository.IProfileRepository
 import javax.inject.Inject
 
@@ -44,6 +44,14 @@ class ProfileRepository @Inject constructor(
                 about
             )
         )
+    }
+
+    override suspend fun logout() {
+        dispatchers.withDefault {
+            storage.putString(Storage.PROFILE_KEY, null)
+            storage.putString(Storage.REFRESH_TOKEN_KEY, null)
+            storage.putString(Storage.TOKEN_KEY, null)
+        }
     }
 
     private suspend fun ProfileData.save(): ProfileData {

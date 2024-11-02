@@ -2,7 +2,7 @@ package com.test.app.core.presentation.utils
 
 import android.content.Context
 import android.net.Uri
-import com.test.app.core.data.Dispatchers
+import com.test.app.core.Dispatchers
 import kotlinx.coroutines.ensureActive
 import java.util.Base64
 

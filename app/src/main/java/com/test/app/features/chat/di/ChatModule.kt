@@ -1,6 +1,6 @@
 package com.test.app.features.chat.di
 
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.chat.data.data_source.ChatDataSource
 import com.test.app.features.chat.data.data_source.IChatDataSource
 import com.test.app.features.chat.data.repository.ChatRepository

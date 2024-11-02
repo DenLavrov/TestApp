@@ -1,7 +1,7 @@
 package com.test.app.features.auth.di
 
 import com.test.app.core.di.CoreComponent
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.auth.presentation.screens.code.CodeViewModel
 import com.test.app.features.auth.presentation.screens.phone.PhoneViewModel
 import com.test.app.features.auth.presentation.screens.register.RegisterViewModel

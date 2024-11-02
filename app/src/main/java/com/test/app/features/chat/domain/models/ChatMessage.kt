@@ -1,4 +1,4 @@
-package com.test.app.features.chat.data.models
+package com.test.app.features.chat.domain.models
 
 import com.test.app.core.OffsetDateTimeSerializer
 import kotlinx.serialization.Serializable

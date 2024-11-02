@@ -1,6 +1,6 @@
 package com.test.app.features.chat.di
 
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.chat.domain.repository.IChatRepository
 import com.test.app.features.chat.presentation.screens.chat.ChatViewModel
 import com.test.app.features.chat.presentation.screens.chats.ChatsViewModel

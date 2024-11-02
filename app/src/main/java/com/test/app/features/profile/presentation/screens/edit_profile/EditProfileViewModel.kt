@@ -1,8 +1,8 @@
 package com.test.app.features.profile.presentation.screens.edit_profile
 
 import androidx.lifecycle.SavedStateHandle
-import com.test.app.core.BaseViewModel
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.BaseViewModel
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.profile.domain.use_cases.GetProfileUseCase
 import com.test.app.features.profile.domain.use_cases.UpdateProfileUseCase
 import dagger.assisted.Assisted

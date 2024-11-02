@@ -1,11 +1,11 @@
 package com.test.app.features.profile.presentation.screens.profile
 
 import androidx.lifecycle.SavedStateHandle
-import com.test.app.core.BaseViewModel
-import com.test.app.core.data.Storage
-import com.test.app.core.di.ViewModelAssistedFactory
+import com.test.app.core.presentation.vm.BaseViewModel
+import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.features.profile.domain.use_cases.GetProfileUseCase
 import com.test.app.features.profile.domain.use_cases.LogoutUseCase
+import com.test.app.features.profile.presentation.utils.toStringRes
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
@@ -44,7 +44,7 @@ class ProfileViewModel @AssistedInject constructor(
                         userName = it.userName,
                         avatar = it.avatar?.filename.orEmpty(),
                         about = it.about,
-                        zodiac = it.zodiacSign,
+                        zodiac = it.zodiacSign?.toStringRes(),
                         phone = it.phone,
                         city = it.city,
                         isLoading = false

@@ -1,8 +1,7 @@
 package com.test.app.features.profile.domain.repository
 
-import com.test.app.features.profile.data.models.AvatarData
-import com.test.app.features.profile.data.models.ProfileData
-import kotlinx.coroutines.flow.Flow
+import com.test.app.features.profile.domain.models.AvatarData
+import com.test.app.features.profile.domain.models.response.ProfileData
 
 interface IProfileRepository {
     suspend fun getProfile(force: Boolean = false): ProfileData
@@ -16,4 +15,6 @@ interface IProfileRepository {
         about: String? = null,
         city: String? = null
     )
+
+    suspend fun logout()
 }

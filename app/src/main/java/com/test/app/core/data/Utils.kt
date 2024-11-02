@@ -1,5 +1,6 @@
 package com.test.app.core.data
 
+import com.test.app.core.Dispatchers
 import kotlinx.coroutines.CoroutineScope
 import org.json.JSONObject
 import retrofit2.HttpException
