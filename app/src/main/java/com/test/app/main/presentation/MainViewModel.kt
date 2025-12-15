@@ -30,6 +30,7 @@ class MainViewModel @AssistedInject constructor(
     init {
         viewModelScope.launch {
             val a = LocalDateTime.now()
+            
             mainRepository.isAuthorized.collect {
                 dispatch(MainAction.Update(it))
             }
