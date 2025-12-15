@@ -1,6 +1,5 @@
 package com.test.app.features.auth.data.repository
 
-import com.test.app.core.Dispatchers
 import com.test.app.core.data.Storage
 import com.test.app.core.data.runHttpRequest
 import com.test.app.features.auth.data.models.AuthCodeRequest
@@ -13,20 +12,19 @@ import javax.inject.Inject
 
 class AuthRepository @Inject constructor(
     private val api: AuthApi,
-    private val storage: Storage,
-    private val dispatchers: Dispatchers
+    private val storage: Storage
 ) : IAuthRepository {
 
-    override suspend fun sendCode(phone: String) = runHttpRequest(dispatchers) {
+    override suspend fun sendCode(phone: String) = runHttpRequest {
         api.sendAuthCode(AuthCodeRequest(phone)).isSuccess
     }
 
-    override suspend fun login(phone: String, code: String) = runHttpRequest(dispatchers) {
+    override suspend fun login(phone: String, code: String) = runHttpRequest {
         api.checkAuthCode(CheckCodeRequest(phone, code)).save().isUserExists ?: false
     }
 
     override suspend fun register(phone: String, userName: String, name: String) {
-        runHttpRequest(dispatchers) {
+        runHttpRequest {
             api.register(RegisterRequest(phone, name, userName)).save()
         }
     }

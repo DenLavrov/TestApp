@@ -12,6 +12,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
 
 class MainViewModel @AssistedInject constructor(
     private val mainRepository: IMainRepository,
@@ -28,6 +29,7 @@ class MainViewModel @AssistedInject constructor(
 
     init {
         viewModelScope.launch {
+            val a = LocalDateTime.now()
             mainRepository.isAuthorized.collect {
                 dispatch(MainAction.Update(it))
             }
