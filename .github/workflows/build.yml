@@ -1,0 +1,55 @@
+name: Detekt
+
+on:
+  pull_request:
+  push:
+
+jobs:
+  detekt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      - name: Get changed Kotlin files
+        id: changed-files
+        run: |
+          # Fetch base branch
+          git fetch origin ${{ github.base_ref }}
+          
+          # Get changed .kt files
+          CHANGED_FILES=$(git diff --name-only --diff-filter=ACMR origin/${{ github.base_ref }}...HEAD \
+            | grep '\.kt$' \
+            | paste -sd "," - \
+            || echo "")
+          
+          if [ -n "$CHANGED_FILES" ]; then
+            echo "files=$CHANGED_FILES" >> $GITHUB_OUTPUT
+            echo "has_changes=true" >> $GITHUB_OUTPUT
+            echo "Changed files:"
+            echo "$CHANGED_FILES" | tr ',' '\n'
+          else
+            echo "has_changes=false" >> $GITHUB_OUTPUT
+            echo "No Kotlin files changed"
+          fi
+
+      - name: Run Detekt on changed files
+        if: steps.changed-files.outputs.has_changes == 'true'
+        run: |
+          ./gradlew detekt -Pdetekt.input="${{ steps.changed-files.outputs.files }}"
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: detekt-report
+          path: build/reports/detekt/

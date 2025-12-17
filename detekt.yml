@@ -1,0 +1,3 @@
+test-rules:
+  DateTimeManagerRule:
+    active: true
