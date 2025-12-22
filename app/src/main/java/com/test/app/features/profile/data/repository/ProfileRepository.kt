@@ -16,7 +16,7 @@ class ProfileRepository @Inject constructor(
     private val dispatchers: Dispatchers
 ) : IProfileRepository {
 
-    override suspend fun getProfile(force: Boolean) = runHttpRequest(dispatchers) {
+    override suspend fun getProfile(force: Boolean) = runHttpRequest {
         if (force) {
             return@runHttpRequest api.getProfile().data.save()
         }
@@ -32,7 +32,7 @@ class ProfileRepository @Inject constructor(
         birthday: String?,
         about: String?,
         city: String?
-    ) = runHttpRequest(dispatchers) {
+    ) = runHttpRequest {
         api.updateProfile(
             UpdateProfileRequest(
                 username,

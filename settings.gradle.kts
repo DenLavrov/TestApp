@@ -22,4 +22,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Test app"
 include(":app")
- 
+include(":detekt_rules")

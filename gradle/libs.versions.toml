@@ -16,6 +16,8 @@ retrofit-serialization-converter = "1.0.0"
 coil = "2.7.0"
 retrofit-logging = "4.11.0"
 ccp = "1.0.3"
+jetbrainsKotlinJvm = "2.0.20"
+detekt = "1.23.8"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -35,6 +37,8 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 dagger = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
+detekt-api = { module = "io.gitlab.arturbosch.detekt:detekt-api", version.ref = "detekt" }
+detekt-gradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
 coil = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 ccp = { group = "com.github.arpitkatiyar1999", name = "Country-Picker", version.ref = "ccp" }
@@ -46,4 +50,5 @@ retrofit-serialization-converter = { group = "com.jakewharton.retrofit", name = 
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+jetbrains-kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "jetbrainsKotlinJvm" }
 
