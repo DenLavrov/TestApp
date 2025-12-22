@@ -12,7 +12,7 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
+import java.text.SimpleDateFormat
 
 class MainViewModel @AssistedInject constructor(
     private val mainRepository: IMainRepository,
@@ -28,12 +28,12 @@ class MainViewModel @AssistedInject constructor(
     interface Factory : ViewModelAssistedFactory<MainViewModel>
 
     init {
-        val a = LocalDateTime.now()
         viewModelScope.launch {
             mainRepository.isAuthorized.collect {
                 dispatch(MainAction.Update(it))
             }
         }
+        val a = SimpleDateFormat("")
     }
 
     override suspend fun reduce(prevState: MainState, action: MainAction): Flow<MainState> {

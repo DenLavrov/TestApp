@@ -30,6 +30,11 @@ tasks.register<Detekt>("detektChanged") {
     config.setFrom(files("$rootDir/detekt.yml"))
 }
 
+tasks.withType<Detekt>().configureEach {
+    dependsOn(":detekt_rules:build")
+    outputs.cacheIf { false }
+}
+
 dependencies {
     detektPlugins(project(":detekt_rules"))
 }

@@ -1,6 +1,7 @@
 plugins {
     id("java-library")
     id("kotlin")
+    kotlin("jvm")
 }
 
 java {
@@ -13,5 +14,5 @@ kotlin {
 }
 
 dependencies {
-    implementation(libs.detekt.api)
+    compileOnly(libs.detekt.api)
 }
