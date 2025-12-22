@@ -44,7 +44,7 @@ jobs:
       - name: Run Detekt on changed files
         if: steps.changed-files.outputs.has_changes == 'true'
         run: |
-          ./gradlew detekt -Pdetekt.input="${{ steps.changed-files.outputs.files }}"
+          ./gradlew detektChanged -Pdetekt.changedFiles="${{ steps.changed-files.outputs.files }}"
 
       - name: Upload report
         if: always()
