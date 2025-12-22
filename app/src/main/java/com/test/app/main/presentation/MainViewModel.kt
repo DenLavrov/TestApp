@@ -2,8 +2,8 @@ package com.test.app.main.presentation
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
-import com.test.app.core.presentation.vm.BaseViewModel
 import com.test.app.core.data.Storage
+import com.test.app.core.presentation.vm.BaseViewModel
 import com.test.app.core.presentation.vm.ViewModelAssistedFactory
 import com.test.app.main.data.repository.IMainRepository
 import dagger.assisted.Assisted
@@ -12,7 +12,6 @@ import dagger.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 
 class MainViewModel @AssistedInject constructor(
     private val mainRepository: IMainRepository,
@@ -33,7 +32,6 @@ class MainViewModel @AssistedInject constructor(
                 dispatch(MainAction.Update(it))
             }
         }
-        val a = SimpleDateFormat("")
     }
 
     override suspend fun reduce(prevState: MainState, action: MainAction): Flow<MainState> {

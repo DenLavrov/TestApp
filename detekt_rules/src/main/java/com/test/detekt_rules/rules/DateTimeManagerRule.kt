@@ -9,6 +9,7 @@ import io.gitlab.arturbosch.detekt.api.Rule
 import io.gitlab.arturbosch.detekt.api.Severity
 import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
+import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtImportDirective
 import java.text.SimpleDateFormat
 import java.time.Instant
@@ -59,13 +60,7 @@ class DateTimeManagerRule(config: Config = Config.empty) : Rule(config) {
         super.visitDotQualifiedExpression(expression)
         val receiver = expression.receiverExpression.text
         if (receiver in FORBIDDEN_DOT_RECEIVERS) {
-            report(
-                CodeSmell(
-                    issue,
-                    Entity.from(expression),
-                    message = "Use DateTimeManager instead of $receiver",
-                ),
-            )
+            report(expression.receiverExpression)
         }
     }
 
@@ -73,13 +68,17 @@ class DateTimeManagerRule(config: Config = Config.empty) : Rule(config) {
         super.visitCallExpression(expression)
         val callee = expression.calleeExpression?.text ?: return
         if (callee in FORBIDDEN_CALLEES) {
-            report(
-                CodeSmell(
-                    issue,
-                    Entity.from(expression),
-                    message = "Use DateTimeManager instead of $callee",
-                ),
-            )
+            report(expression.calleeExpression ?: return)
         }
+    }
+
+    private fun report(expression: KtExpression) {
+        report(
+            CodeSmell(
+                issue,
+                Entity.from(expression),
+                message = "Use DateTimeManager instead of ${expression.text}",
+            ),
+        )
     }
 }
